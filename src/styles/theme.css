@@ -1,0 +1,34 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #2D6A4F;
+  --color-primary-light: #74C69D;
+  --color-primary-dark: #1B4332;
+  --color-bg-cream: #FDFAF4;
+  --color-bg-card: #FFF8F0;
+  --color-brown: #3E1F00;
+  --color-peach: #FFE5CC;
+  --color-text-dark: #1A1A1A;
+  --color-text-muted: #6B6B6B;
+  
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-bg-cream);
+    color: var(--color-text-dark);
+    font-family: var(--font-body);
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+  }
+}
+
+@layer components {
+  .cart-input {
+    @apply w-full rounded-[10px] border border-[#E8E0D5] bg-bg-cream px-4 py-3 text-sm text-text-dark outline-none transition-colors placeholder:text-text-muted/70 focus:border-primary focus:bg-white;
+  }
+}
