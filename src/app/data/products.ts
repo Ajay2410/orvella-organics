@@ -1,0 +1,313 @@
+import chikooFront from "../../assets/products/chikoo-front.jpg";
+import chikooBack from "../../assets/products/chikoo-back.jpg";
+import chikooFrontBack from "../../assets/products/chikoo-front-back.jpg";
+import chikooNutrition from "../../assets/products/chikoo-nutrition.jpg";
+import chikooContact from "../../assets/products/chikoo-contact.jpg";
+import jamunFront from "../../assets/products/jamun-front.jpg";
+import jamunBack from "../../assets/products/jamun-back.jpg";
+import jamunFrontBack from "../../assets/products/jamun-front-back.jpg";
+import jamunNutrition from "../../assets/products/jamun-nutrition.jpg";
+import jamunContact from "../../assets/products/jamun-contact.jpg";
+import mangoFront from "../../assets/products/mango-front.jpg";
+import mangoBack from "../../assets/products/mango-back.jpg";
+import mangoFrontBack from "../../assets/products/mango-front-back.jpg";
+import mangoNutrition from "../../assets/products/mango-nutrition.jpg";
+import mangoContact from "../../assets/products/mango-contact.jpg";
+import beetrootFront from "../../assets/products/beetroot-front.jpg";
+import beetrootBack from "../../assets/products/beetroot-back.jpg";
+import beetrootFrontBack from "../../assets/products/beetroot-front-back.jpg";
+
+export const CHIKOO_PRODUCT = {
+  id: "dried-chickoo-slices",
+  name: "Orvella Organics 100% Natural Dried Chickoo Slices",
+  shortName: "Dried Chickoo Slices",
+  title: "Orvella Organics 100% Natural Dried Chickoo Slices | Pure Dehydrated Sapota Fruit, No Added Sugar | Chemical-Free Energy Snack, 150g",
+  category: "Fruits",
+  flavour: "Chickoo",
+  brand: "ORVELLA ORGANICS",
+  weight: "150g",
+  itemWeight: "170 Grams",
+  netQuantity: "1 Count",
+  upc: "015642651466",
+  asin: "B0H4Q8258V",
+  partNumber: "ORVELLA ORGANICS-02",
+  dimensions: "20 x 10 x 6 cm",
+  countryOfOrigin: "India",
+  genericName: "Fruit Snacks",
+  manufacturer: "ORVELLA ORGANICS",
+  packer: "ORVELLA ORGANICS",
+  importer: "ORVELLA ORGANICS",
+  ingredients: "Chikoo Slices",
+  stockStatus: "Out of Stock",
+  isOutOfStock: true,
+  images: [chikooFront, chikooBack, chikooFrontBack, chikooNutrition, chikooContact],
+  heroImage: chikooFront,
+  description:
+    "Enjoy the rich taste of Chickoo in a convenient dried fruit format. These chickoo slices are prepared from real fruit and carefully dehydrated to create a naturally flavorful snack. Made with a clean ingredient approach, they contain no added sugar and no added preservatives.",
+  highlights: [
+    "Made from carefully dehydrated chickoo slices with 100% fruit content.",
+    "Authentic Chickoo flavor and chewy texture for daily fruit-based snacking.",
+    "Packed in a resealable pouch for freshness, travel, office, school and outdoor use.",
+    "Prepared without artificial additives, added sugar or added preservatives.",
+    "Lightweight 150g pouch for easy storage and portability.",
+  ],
+  features: [
+    "100% fruit content prepared from real Chickoo slices",
+    "No added sugar",
+    "No preservatives added",
+    "Vegan friendly",
+    "Ready to eat directly from the pack",
+    "Resealable packaging",
+    "Portable snack for office, travel, school and outdoor activities",
+  ],
+  nutrition: [
+    ["Calories", "380g", "10%"],
+    ["Total Fat", "1g", "0%"],
+    ["Saturated Fat", "0g", "0%"],
+    ["Trans Fat", "0g", ""],
+    ["Cholesterol", "0mg", "0%"],
+    ["Sodium", "15mg", "1%"],
+    ["Total Carbohydrate", "91g", "33%"],
+    ["Dietary Fiber", "5g", "18%"],
+    ["Fructose", "30g", ""],
+    ["Protein", "1g", ""],
+    ["Vitamin A", "", "1%"],
+    ["Calcium", "", "11%"],
+    ["Vitamin C", "", "18%"],
+    ["Iron", "", "12%"],
+  ],
+  storage:
+    "Store in a cool and dry place. Reseal the pouch properly after opening. As this product is made from natural fruit, slight variations in color, texture and appearance may occur.",
+  legalDisclaimer:
+    "Actual product packaging and materials may contain more and different information than what is shown on our app or website. Always read labels, warnings, and directions before using or consuming a product.",
+  contact: {
+    address: "Surat, Gujarat, Pin code: 395006",
+    phone: "+91 97142 80780",
+    email: "orvellaorganics@gmail.com",
+    fssai: "20726031003417",
+  },
+};
+
+export const JAMUN_PRODUCT = {
+  id: "dried-black-plum-jamun-slices",
+  name: "Orvella Organics 100% Natural Dried Black Plum (Jamun) Slices",
+  shortName: "Dried Black Plum (Jamun) Slices",
+  title: "Orvella Organics 100% Natural Dried Black Plum (Jamun) Slices | Pure Dehydrated Fruit, No Added Sugar | Chemical-Free Superfood Snack, 100g",
+  category: "Fruits",
+  flavour: "Black Plum (Jamun)",
+  brand: "ORVELLA ORGANICS",
+  weight: "100g",
+  itemWeight: "170 Grams",
+  netQuantity: "1 Count",
+  upc: "015642652197",
+  asin: "B0H4Q73CYP",
+  partNumber: "ORVELLA ORGANICS-02",
+  dimensions: "20 x 10 x 6 cm",
+  countryOfOrigin: "India",
+  genericName: "Fruit Snacks",
+  manufacturer: "ORVELLA ORGANICS",
+  packer: "ORVELLA ORGANICS",
+  importer: "ORVELLA ORGANICS",
+  ingredients: "Black Plum From India",
+  stockStatus: "Out of Stock",
+  isOutOfStock: true,
+  images: [jamunFront, jamunBack, jamunFrontBack, jamunNutrition, jamunContact],
+  heroImage: jamunFront,
+  description:
+    "Enjoy the rich taste of black plum in a convenient dried fruit format. These jamun slices are prepared from real fruit and carefully dehydrated to create a naturally flavorful snack. Made with a clean ingredient approach, they contain no added sugar and no added preservatives.",
+  highlights: [
+    "Made from carefully dehydrated jamun slices with 100% fruit content.",
+    "Authentic black plum flavor and chewy texture for daily fruit-based snacking.",
+    "Packed in a resealable pouch for freshness, travel, office, school and outdoor use.",
+    "Prepared without artificial additives, added sugar or added preservatives.",
+    "Lightweight 100g pouch for easy storage and portability.",
+  ],
+  features: [
+    "100% fruit content prepared from real black plum slices",
+    "No added sugar",
+    "No preservatives added",
+    "Vegan friendly",
+    "Ready to eat directly from the pack",
+    "Resealable packaging",
+    "Portable snack for office, travel, school and outdoor activities",
+  ],
+  nutrition: [
+    ["Calories", "32g", "2.7%"],
+    ["Total Fat", "0g", "0%"],
+    ["Saturated Fat", "0g", "0%"],
+    ["Trans Fat", "0g", ""],
+    ["Cholesterol", "0mg", "0%"],
+    ["Sodium", "1mg", "0%"],
+    ["Total Carbohydrate", "7.7g", "3%"],
+    ["Dietary Fiber", "2g", "8%"],
+    ["Fructose", "4.9g", ""],
+    ["Protein", "1.1g", ""],
+    ["Vitamin A", "", "0.2%"],
+    ["Calcium", "", "1.2%"],
+    ["Vitamin C", "", "98%"],
+    ["Iron", "", "2.3%"],
+  ],
+  storage:
+    "Store in a cool and dry place. Reseal the pouch properly after opening. As this product is made from natural fruit, slight variations in color, texture and appearance may occur.",
+  legalDisclaimer:
+    "Actual product packaging and materials may contain more and different information than what is shown on our app or website. Always read labels, warnings, and directions before using or consuming a product.",
+  contact: {
+    address: "Surat, Gujarat, Pin code: 395006",
+    phone: "+91 97142 80780",
+    email: "orvellaorganics@gmail.com",
+    fssai: "20726031003417",
+  },
+};
+
+export const MANGO_PRODUCT = {
+  id: "dried-mango-slices",
+  name: "Orvella Organics 100% Natural Dried Mango Slices",
+  shortName: "Dried Mango Slices",
+  title: "Orvella Organics 100% Natural Dried Mango Slices | Pure Dehydrated Fruit, No Added Sugar & Chemical-Free | Healthy Vegan Snack, 100g (Mango)",
+  category: "Fruits",
+  flavour: "Mango",
+  brand: "ORVELLA ORGANICS",
+  weight: "100g",
+  itemWeight: "170 Grams",
+  netQuantity: "1 Count",
+  upc: "015642659172",
+  asin: "B0H4QDSJTH",
+  partNumber: "ORVELLA ORGANICS-02",
+  dimensions: "20 x 10 x 6 cm",
+  countryOfOrigin: "India",
+  genericName: "Fruit Snacks",
+  manufacturer: "ORVELLA ORGANICS",
+  packer: "ORVELLA ORGANICS",
+  importer: "ORVELLA ORGANICS",
+  ingredients: "Mango Slices",
+  stockStatus: "Out of Stock",
+  isOutOfStock: true,
+  images: [mangoFront, mangoBack, mangoFrontBack, mangoNutrition, mangoContact],
+  heroImage: mangoFront,
+  description:
+    "Enjoy the rich taste of Mango in a convenient dried fruit format. These mango slices are prepared from real fruit and carefully dehydrated to create a naturally flavorful snack. Made with a clean ingredient approach, they contain no added sugar and no added preservatives.",
+  highlights: [
+    "Made from carefully dehydrated mango slices with 100% fruit content.",
+    "Authentic Mango flavor and chewy texture for daily fruit-based snacking.",
+    "Packed in a resealable pouch for freshness, travel, office, school and outdoor use.",
+    "Prepared without artificial additives, added sugar or added preservatives.",
+    "Lightweight 100g pouch for easy storage and portability.",
+  ],
+  features: [
+    "100% fruit content prepared from real Mango slices",
+    "No added sugar",
+    "No preservatives added",
+    "Vegan friendly",
+    "Ready to eat directly from the pack",
+    "Resealable packaging",
+    "Portable snack for office, travel, school and outdoor activities",
+  ],
+  nutrition: [
+    ["Calories", "360g", "0%"],
+    ["Total Fat", "0g", "0%"],
+    ["Saturated Fat", "0g", "0%"],
+    ["Trans Fat", "0g", ""],
+    ["Cholesterol", "0mg", "0%"],
+    ["Sodium", "20mg", "1%"],
+    ["Total Carbohydrate", "88g", "32%"],
+    ["Dietary Fiber", "5g", "18%"],
+    ["Fructose", "54g", ""],
+    ["Protein", "2g", ""],
+    ["Vitamin A", "", "10%"],
+    ["Calcium", "", "13%"],
+    ["Vitamin C", "", "22%"],
+    ["Iron", "", "15%"],
+  ],
+  storage:
+    "Store in a cool and dry place. Reseal the pouch properly after opening. As this product is made from natural fruit, slight variations in color, texture and appearance may occur.",
+  legalDisclaimer:
+    "Actual product packaging and materials may contain more and different information than what is shown on our app or website. Always read labels, warnings, and directions before using or consuming a product.",
+  contact: {
+    address: "Surat, Gujarat, Pin code: 395006",
+    phone: "+91 97142 80780",
+    email: "orvellaorganics@gmail.com",
+    fssai: "20726031003417",
+  },
+};
+
+export const BEETROOT_PRODUCT = {
+  id: "beetroot-powder",
+  name: "Beetroot Powder 200 g",
+  shortName: "Beetroot Powder",
+  title: "Beetroot Powder 200 g Natural Beet Root Powder with No Added Sugar, Gluten Free & Vegan Superfood for Smoothies, Shakes, Juices, Baking, Cooking, Natural Food Color and Daily Nutrition Use",
+  category: "Powders",
+  flavour: "Beetroot Powder",
+  brand: "ORVELLA ORGANICS",
+  weight: "200g",
+  itemWeight: "200 Grams",
+  netQuantity: "1 Count",
+  upc: "Not Applicable",
+  asin: "B0HBKHC2S4",
+  partNumber: "ORVELLA ORGANICS-02",
+  dimensions: "20 x 10 x 6 cm",
+  countryOfOrigin: "India",
+  genericName: "Beetroot Powder",
+  manufacturer: "ORVELLA ORGANICS",
+  packer: "ORVELLA ORGANICS",
+  importer: "ORVELLA ORGANICS",
+  itemForm: "Powder",
+  packageQuantity: "1",
+  ingredients: "Beetroot Powder",
+  stockStatus: "In Stock",
+  isOutOfStock: false,
+  price: 249,
+  mrp: 399,
+  unitPrice: "₹124.50 / 100 g",
+  discount: "38%",
+  images: [beetrootFront, beetrootBack, beetrootFrontBack],
+  heroImage: beetrootFront,
+  description:
+    "Experience the convenience of using finely milled beetroot powder made from carefully selected beetroot. This versatile ingredient brings natural beetroot flavor and color to your everyday food and beverage preparations.",
+  highlights: [
+    "Made from finely milled beetroot powder with natural color and earthy flavor for easy daily use.",
+    "Pure beetroot ingredient with no added sugar, suitable for smoothies, juices, shakes and recipes.",
+    "Mix with water, add to smoothies, shakes, yogurt, oats, baking recipes, dosa and cooking preparations.",
+    "Hygienically processed fine powder that blends easily and helps create smooth beverage and food mixes.",
+    "Plant-based beetroot powder suitable for vegan lifestyle and gluten-free dietary preferences.",
+    "Use as a natural ingredient for adding beetroot flavor and vibrant color to everyday recipes.",
+    "Resealable pouch packaging helps maintain freshness and makes storage easy after opening.",
+    "Includes 200g beetroot powder pack with simple preparation instructions printed on packaging.",
+  ],
+  features: [
+    "Pure ingredient made with beetroot powder without added sugar",
+    "Fine powder texture blends smoothly with water, juices, shakes and smoothies",
+    "Suitable for beverages, baking, cooking, yogurt, oats and various recipes",
+    "Vegan and gluten free ingredient suitable for different food preferences",
+    "Packed in a resealable pouch for easy storage and handling",
+  ],
+  usage: [
+    "Mix 1 teaspoon (5g) with a glass of water and stir well.",
+    "Add to smoothies, shakes and juices.",
+    "Use as a natural food color in baking.",
+    "Mix into roti, dosa, pasta or pancake batter.",
+    "Add to yogurt, oats or energy bowls.",
+  ],
+  nutrition: [
+    ["Energy", "354 kcal", "1.77"],
+    ["Protein", "11g", "21.02"],
+    ["Carbohydrate", "75g", ""],
+    ["Total Sugar", "47g", ""],
+    ["Added Sugar", "0g", ""],
+    ["Total Fat", "1g", "1.67"],
+    ["Saturated Fat", "0g", ""],
+    ["Trans Fat", "0g", ""],
+    ["Sodium", "0mg", ""],
+  ],
+  storage:
+    "Store in a cool and dry place away from direct sunlight. Do not buy if the seal is broken. Reseal properly once opened.",
+  legalDisclaimer:
+    "Check the packaging label before use. Individual preferences and dietary requirements may vary. May not be suitable for individuals allergic to beetroot.",
+  contact: {
+    address: "Surat, Gujarat, Pin code: 395006",
+    phone: "+91 97142 80780",
+    email: "orvellaorganics@gmail.com",
+    fssai: "20726031003417",
+  },
+};
+
+export const PRODUCTS = [CHIKOO_PRODUCT, JAMUN_PRODUCT, MANGO_PRODUCT, BEETROOT_PRODUCT];

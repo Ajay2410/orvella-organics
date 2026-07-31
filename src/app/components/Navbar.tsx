@@ -2,24 +2,19 @@ import { Link } from "react-router";
 import { ShoppingBag, Menu } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "../cart/CartContext";
+import logoWide from "../../assets/brand/orvella-logo-wide.png";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { count } = useCart();
 
   return (
-    <header className="sticky top-0 z-50 bg-white h-[72px] flex items-center border-b border-[#E8E0D5] px-6 lg:px-20">
+    <header className="sticky top-0 z-50 bg-white h-[84px] flex items-center border-b border-[#E8E0D5] px-4 sm:px-6 lg:px-20">
       <div className="w-full flex items-center justify-between">
         
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-primary-light/20 flex items-center justify-center text-primary">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
-              <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
-            </svg>
-          </div>
-          <span className="font-heading font-bold text-xl text-primary-dark">Orvella Organics</span>
+        <Link to="/" className="flex items-center">
+          <img src={logoWide} alt="Orvella Organics" className="h-14 sm:h-16 w-auto max-w-[190px] sm:max-w-[240px] object-contain" />
         </Link>
 
         {/* Desktop Nav */}
@@ -51,7 +46,7 @@ export function Navbar() {
       
       {/* Mobile Nav */}
       {isOpen && (
-        <div className="absolute top-[72px] left-0 right-0 bg-white border-b border-[#E8E0D5] p-4 flex flex-col gap-4 md:hidden shadow-lg">
+        <div className="absolute top-[84px] left-0 right-0 bg-white border-b border-[#E8E0D5] p-4 flex flex-col gap-4 md:hidden shadow-lg">
           <Link to="/" className="text-text-dark font-medium px-2 py-1" onClick={() => setIsOpen(false)}>Home</Link>
           <Link to="/about" className="text-text-dark font-medium px-2 py-1" onClick={() => setIsOpen(false)}>About</Link>
           <Link to="/products" className="text-text-dark font-medium px-2 py-1" onClick={() => setIsOpen(false)}>Products</Link>

@@ -100,7 +100,7 @@ export default function Cart() {
   };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="py-16 lg:py-24 px-6 lg:px-20 bg-bg-cream min-h-screen">
+    <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="py-10 lg:py-16 px-4 sm:px-6 lg:px-20 bg-bg-cream min-h-screen">
       <div className="max-w-[1180px] mx-auto">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
           <div>
