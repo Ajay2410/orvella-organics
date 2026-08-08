@@ -2,7 +2,11 @@ import { Link } from "react-router";
 import { Leaf, Sun, PackageSearch, Droplet, Zap, Heart, Instagram } from "lucide-react";
 import { motion } from "motion/react";
 import { homeVariants } from "../animations";
-import { PRODUCTS } from "../data/products";
+import { PRODUCTS, sortProductsByStockStatus } from "../data/products";
+
+function getStockBadgeClass(product: any) {
+  return product.isOutOfStock ? "bg-[#8B3E16]" : "bg-primary";
+}
 
 function PriceBlock({ product }: { product: any }) {
   if (!product.price) {
@@ -30,14 +34,25 @@ function ProductCard({ product }: { product: any }) {
     >
       <Link to={`/products/${product.id}`} className="block relative aspect-square rounded-[12px] overflow-hidden bg-white">
         <img src={product.heroImage} alt={product.shortName} className="w-full h-full object-contain hover:scale-105 transition-transform duration-500" />
-        <span className="absolute top-3 left-3 bg-[#8B3E16] text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+        <span className={`absolute top-3 left-3 ${getStockBadgeClass(product)} text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider`}>
           {product.stockStatus}
         </span>
       </Link>
       <div className="flex flex-col gap-2">
         <Link to={`/products/${product.id}`}><h3 className="font-heading font-bold text-lg text-text-dark">{product.shortName}</h3></Link>
-        <div className="flex gap-2">
-          <span className="px-3 py-1 rounded-full text-xs font-medium font-body bg-primary text-white">{product.weight}</span>
+        <div className="flex flex-wrap gap-2">
+          {product.variants?.map((variant: any) => (
+            <span
+              key={variant.id}
+              className={`px-3 py-1 rounded-full text-xs font-medium font-body border ${
+                variant.isOutOfStock
+                  ? "bg-white text-[#8B3E16] border-[#8B3E16]/30"
+                  : "bg-primary text-white border-primary"
+              }`}
+            >
+              {variant.label}
+            </span>
+          ))}
           <span className="px-3 py-1 rounded-full text-xs font-medium font-body bg-white text-text-muted border border-[#E8E0D5]">Vegetarian</span>
         </div>
         <div className="flex items-center justify-between mt-2">
@@ -118,7 +133,7 @@ export function Home() {
             Our Products
           </motion.h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6 max-w-5xl mx-auto">
-            {PRODUCTS.map(p => <ProductCard key={p.id} product={p} />)}
+            {sortProductsByStockStatus(PRODUCTS).map(p => <ProductCard key={p.id} product={p} />)}
           </div>
         </div>
       </section>
@@ -294,7 +309,7 @@ export function Home() {
       </section>
 
       {/* Instagram / Gallery Strip */}
-      <section className="py-14 lg:py-18 bg-white overflow-hidden">
+      <section aria-hidden="true" className="hidden py-14 lg:py-18 bg-white overflow-hidden">
         <div className="text-center mb-8">
           <h2 className="font-heading font-bold text-3xl text-text-dark flex items-center justify-center gap-3">
             <Instagram className="text-primary" /> Follow @orvellaorganics
@@ -316,7 +331,7 @@ export function Home() {
       </section>
 
       {/* Newsletter Banner */}
-      <section className="py-14 lg:py-18 px-4 sm:px-6 lg:px-20 bg-bg-cream">
+      <section aria-hidden="true" className="hidden py-14 lg:py-18 px-4 sm:px-6 lg:px-20 bg-bg-cream">
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}

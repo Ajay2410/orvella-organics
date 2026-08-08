@@ -16,16 +16,57 @@ import mangoContact from "../../assets/products/mango-contact.jpg";
 import beetrootFront from "../../assets/products/beetroot-front.jpg";
 import beetrootBack from "../../assets/products/beetroot-back.jpg";
 import beetrootFrontBack from "../../assets/products/beetroot-front-back.jpg";
+import beetrootNutrition from "../../assets/products/beetroot-nutrition.jpg";
+import beetrootContact from "../../assets/products/beetroot-contact.jpg";
+
+export const PRODUCT_VARIANTS = [
+  {
+    id: "100g",
+    label: "100g",
+    weight: "100g",
+    packLabel: "Pack of 1 (100g x 1)",
+    price: 149,
+    unitPrice: "₹149 / 100 g",
+    stockStatus: "Out of Stock",
+    isOutOfStock: true,
+  },
+  {
+    id: "200g",
+    label: "200g",
+    weight: "200g",
+    packLabel: "Pack of 1 (200g x 1)",
+    price: 249,
+    unitPrice: "₹124.50 / 100 g",
+    stockStatus: "In Stock",
+    isOutOfStock: false,
+  },
+  {
+    id: "400g",
+    label: "400g",
+    weight: "400g",
+    packLabel: "Pack of 2 (200g x 2)",
+    price: 449,
+    unitPrice: "₹112.25 / 100 g",
+    stockStatus: "In Stock",
+    isOutOfStock: false,
+  },
+];
+
+export function getDefaultProductVariant() {
+  return PRODUCT_VARIANTS.find((variant) => !variant.isOutOfStock) || PRODUCT_VARIANTS[0];
+}
+
+const DEFAULT_PRODUCT_VARIANT = getDefaultProductVariant();
 
 export const CHIKOO_PRODUCT = {
   id: "dried-chickoo-slices",
   name: "Orvella Organics 100% Natural Dried Chickoo Slices",
   shortName: "Dried Chickoo Slices",
-  title: "Orvella Organics 100% Natural Dried Chickoo Slices | Pure Dehydrated Sapota Fruit, No Added Sugar | Chemical-Free Energy Snack, 150g",
+  title: "Orvella Organics 100% Natural Dried Chickoo Slices | Pure Dehydrated Sapota Fruit, No Added Sugar | Chemical-Free Energy Snack",
   category: "Fruits",
   flavour: "Chickoo",
   brand: "ORVELLA ORGANICS",
-  weight: "150g",
+  weight: DEFAULT_PRODUCT_VARIANT.weight,
   itemWeight: "170 Grams",
   netQuantity: "1 Count",
   upc: "015642651466",
@@ -38,8 +79,11 @@ export const CHIKOO_PRODUCT = {
   packer: "ORVELLA ORGANICS",
   importer: "ORVELLA ORGANICS",
   ingredients: "Chikoo Slices",
-  stockStatus: "Out of Stock",
-  isOutOfStock: true,
+  stockStatus: DEFAULT_PRODUCT_VARIANT.stockStatus,
+  isOutOfStock: DEFAULT_PRODUCT_VARIANT.isOutOfStock,
+  price: DEFAULT_PRODUCT_VARIANT.price,
+  unitPrice: DEFAULT_PRODUCT_VARIANT.unitPrice,
+  variants: PRODUCT_VARIANTS,
   images: [chikooFront, chikooBack, chikooFrontBack, chikooNutrition, chikooContact],
   heroImage: chikooFront,
   description:
@@ -49,7 +93,7 @@ export const CHIKOO_PRODUCT = {
     "Authentic Chickoo flavor and chewy texture for daily fruit-based snacking.",
     "Packed in a resealable pouch for freshness, travel, office, school and outdoor use.",
     "Prepared without artificial additives, added sugar or added preservatives.",
-    "Lightweight 150g pouch for easy storage and portability.",
+    "Available in 100g, 200g and 400g pack options for easy storage and portability.",
   ],
   features: [
     "100% fruit content prepared from real Chickoo slices",
@@ -92,11 +136,11 @@ export const JAMUN_PRODUCT = {
   id: "dried-black-plum-jamun-slices",
   name: "Orvella Organics 100% Natural Dried Black Plum (Jamun) Slices",
   shortName: "Dried Black Plum (Jamun) Slices",
-  title: "Orvella Organics 100% Natural Dried Black Plum (Jamun) Slices | Pure Dehydrated Fruit, No Added Sugar | Chemical-Free Superfood Snack, 100g",
+  title: "Orvella Organics 100% Natural Dried Black Plum (Jamun) Slices | Pure Dehydrated Fruit, No Added Sugar | Chemical-Free Superfood Snack",
   category: "Fruits",
   flavour: "Black Plum (Jamun)",
   brand: "ORVELLA ORGANICS",
-  weight: "100g",
+  weight: DEFAULT_PRODUCT_VARIANT.weight,
   itemWeight: "170 Grams",
   netQuantity: "1 Count",
   upc: "015642652197",
@@ -109,8 +153,11 @@ export const JAMUN_PRODUCT = {
   packer: "ORVELLA ORGANICS",
   importer: "ORVELLA ORGANICS",
   ingredients: "Black Plum From India",
-  stockStatus: "Out of Stock",
-  isOutOfStock: true,
+  stockStatus: DEFAULT_PRODUCT_VARIANT.stockStatus,
+  isOutOfStock: DEFAULT_PRODUCT_VARIANT.isOutOfStock,
+  price: DEFAULT_PRODUCT_VARIANT.price,
+  unitPrice: DEFAULT_PRODUCT_VARIANT.unitPrice,
+  variants: PRODUCT_VARIANTS,
   images: [jamunFront, jamunBack, jamunFrontBack, jamunNutrition, jamunContact],
   heroImage: jamunFront,
   description:
@@ -120,7 +167,7 @@ export const JAMUN_PRODUCT = {
     "Authentic black plum flavor and chewy texture for daily fruit-based snacking.",
     "Packed in a resealable pouch for freshness, travel, office, school and outdoor use.",
     "Prepared without artificial additives, added sugar or added preservatives.",
-    "Lightweight 100g pouch for easy storage and portability.",
+    "Available in 100g, 200g and 400g pack options for easy storage and portability.",
   ],
   features: [
     "100% fruit content prepared from real black plum slices",
@@ -163,11 +210,11 @@ export const MANGO_PRODUCT = {
   id: "dried-mango-slices",
   name: "Orvella Organics 100% Natural Dried Mango Slices",
   shortName: "Dried Mango Slices",
-  title: "Orvella Organics 100% Natural Dried Mango Slices | Pure Dehydrated Fruit, No Added Sugar & Chemical-Free | Healthy Vegan Snack, 100g (Mango)",
+  title: "Orvella Organics 100% Natural Dried Mango Slices | Pure Dehydrated Fruit, No Added Sugar & Chemical-Free | Healthy Vegan Snack",
   category: "Fruits",
   flavour: "Mango",
   brand: "ORVELLA ORGANICS",
-  weight: "100g",
+  weight: DEFAULT_PRODUCT_VARIANT.weight,
   itemWeight: "170 Grams",
   netQuantity: "1 Count",
   upc: "015642659172",
@@ -180,8 +227,11 @@ export const MANGO_PRODUCT = {
   packer: "ORVELLA ORGANICS",
   importer: "ORVELLA ORGANICS",
   ingredients: "Mango Slices",
-  stockStatus: "Out of Stock",
-  isOutOfStock: true,
+  stockStatus: DEFAULT_PRODUCT_VARIANT.stockStatus,
+  isOutOfStock: DEFAULT_PRODUCT_VARIANT.isOutOfStock,
+  price: DEFAULT_PRODUCT_VARIANT.price,
+  unitPrice: DEFAULT_PRODUCT_VARIANT.unitPrice,
+  variants: PRODUCT_VARIANTS,
   images: [mangoFront, mangoBack, mangoFrontBack, mangoNutrition, mangoContact],
   heroImage: mangoFront,
   description:
@@ -191,7 +241,7 @@ export const MANGO_PRODUCT = {
     "Authentic Mango flavor and chewy texture for daily fruit-based snacking.",
     "Packed in a resealable pouch for freshness, travel, office, school and outdoor use.",
     "Prepared without artificial additives, added sugar or added preservatives.",
-    "Lightweight 100g pouch for easy storage and portability.",
+    "Available in 100g, 200g and 400g pack options for easy storage and portability.",
   ],
   features: [
     "100% fruit content prepared from real Mango slices",
@@ -232,13 +282,13 @@ export const MANGO_PRODUCT = {
 
 export const BEETROOT_PRODUCT = {
   id: "beetroot-powder",
-  name: "Beetroot Powder 200 g",
+  name: "Beetroot Powder",
   shortName: "Beetroot Powder",
-  title: "Beetroot Powder 200 g Natural Beet Root Powder with No Added Sugar, Gluten Free & Vegan Superfood for Smoothies, Shakes, Juices, Baking, Cooking, Natural Food Color and Daily Nutrition Use",
+  title: "Beetroot Powder Natural Beet Root Powder with No Added Sugar, Gluten Free & Vegan Superfood for Smoothies, Shakes, Juices, Baking, Cooking, Natural Food Color and Daily Nutrition Use",
   category: "Powders",
   flavour: "Beetroot Powder",
   brand: "ORVELLA ORGANICS",
-  weight: "200g",
+  weight: DEFAULT_PRODUCT_VARIANT.weight,
   itemWeight: "200 Grams",
   netQuantity: "1 Count",
   upc: "Not Applicable",
@@ -255,11 +305,12 @@ export const BEETROOT_PRODUCT = {
   ingredients: "Beetroot Powder",
   stockStatus: "In Stock",
   isOutOfStock: false,
-  price: 249,
+  price: DEFAULT_PRODUCT_VARIANT.price,
   mrp: 399,
-  unitPrice: "₹124.50 / 100 g",
+  unitPrice: DEFAULT_PRODUCT_VARIANT.unitPrice,
   discount: "38%",
-  images: [beetrootFront, beetrootBack, beetrootFrontBack],
+  variants: PRODUCT_VARIANTS,
+  images: [beetrootFront, beetrootBack, beetrootFrontBack, beetrootNutrition, beetrootContact],
   heroImage: beetrootFront,
   description:
     "Experience the convenience of using finely milled beetroot powder made from carefully selected beetroot. This versatile ingredient brings natural beetroot flavor and color to your everyday food and beverage preparations.",
@@ -271,7 +322,7 @@ export const BEETROOT_PRODUCT = {
     "Plant-based beetroot powder suitable for vegan lifestyle and gluten-free dietary preferences.",
     "Use as a natural ingredient for adding beetroot flavor and vibrant color to everyday recipes.",
     "Resealable pouch packaging helps maintain freshness and makes storage easy after opening.",
-    "Includes 200g beetroot powder pack with simple preparation instructions printed on packaging.",
+    "Includes 100g, 200g and 400g pack options with simple preparation instructions printed on packaging.",
   ],
   features: [
     "Pure ingredient made with beetroot powder without added sugar",
@@ -311,3 +362,7 @@ export const BEETROOT_PRODUCT = {
 };
 
 export const PRODUCTS = [CHIKOO_PRODUCT, JAMUN_PRODUCT, MANGO_PRODUCT, BEETROOT_PRODUCT];
+
+export function sortProductsByStockStatus<T extends { isOutOfStock?: boolean }>(products: T[]) {
+  return [...products].sort((first, second) => Number(first.isOutOfStock) - Number(second.isOutOfStock));
+}

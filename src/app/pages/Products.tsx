@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import { productsVariants } from "../animations";
-import { PRODUCTS } from "../data/products";
+import { PRODUCTS, sortProductsByStockStatus } from "../data/products";
 
 const STOCK_FILTERS = [
   { label: "All Stock", value: "all" },
@@ -20,6 +20,18 @@ const PRODUCT_SECTIONS = [
   { title: "Dried Fruit Slices", category: "Fruits" },
   { title: "Powders", category: "Powders" },
 ];
+
+function getStockBadgeClass(product: any) {
+  return product.isOutOfStock ? "bg-[#8B3E16]" : "bg-primary";
+}
+
+function hasInStockVariant(product: any) {
+  return product.variants ? product.variants.some((variant: any) => !variant.isOutOfStock) : !product.isOutOfStock;
+}
+
+function hasOutOfStockVariant(product: any) {
+  return product.variants ? product.variants.some((variant: any) => variant.isOutOfStock) : product.isOutOfStock;
+}
 
 function PriceBlock({ product }: { product: any }) {
   if (!product.price) {
@@ -51,7 +63,7 @@ function ProductCard({ product }: { product: any }) {
         <div className="absolute top-3 left-3 bg-primary-light text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
           {product.category}
         </div>
-        <div className="absolute top-3 right-3 bg-[#8B3E16] text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+        <div className={`absolute top-3 right-3 ${getStockBadgeClass(product)} text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider`}>
           {product.stockStatus}
         </div>
       </Link>
@@ -61,9 +73,20 @@ function ProductCard({ product }: { product: any }) {
           <p className="font-body text-sm text-text-muted mt-1 line-clamp-2">{product.description}</p>
         </div>
         
-        <div className="flex gap-2">
-          <span className="flex-1 text-center py-1.5 rounded-full text-xs font-medium font-body bg-primary text-white border border-primary">{product.weight}</span>
-          <span className="flex-1 text-center py-1.5 rounded-full text-xs font-medium font-body bg-transparent text-text-muted border border-[#E8E0D5]">Vegetarian</span>
+        <div className="flex flex-wrap gap-2">
+          {product.variants?.map((variant: any) => (
+            <span
+              key={variant.id}
+              className={`px-3 py-1.5 rounded-full text-xs font-medium font-body border ${
+                variant.isOutOfStock
+                  ? "bg-white text-[#8B3E16] border-[#8B3E16]/30"
+                  : "bg-primary text-white border-primary"
+              }`}
+            >
+              {variant.label}
+            </span>
+          ))}
+          <span className="px-3 py-1.5 rounded-full text-xs font-medium font-body bg-transparent text-text-muted border border-[#E8E0D5]">Vegetarian</span>
         </div>
         
         <PriceBlock product={product} />
@@ -76,7 +99,7 @@ function ProductCard({ product }: { product: any }) {
             <button disabled className="w-full mt-2 text-center bg-[#D8CEC2] text-text-muted px-4 py-2.5 rounded-[8px] text-sm font-medium cursor-not-allowed">Out of Stock</button>
           ) : (
             <a
-              href={`https://wa.me/916354726401?text=${encodeURIComponent(`Hi! I'd like to order: ${product.shortName} - ${product.weight} - ₹${product.price}`)}`}
+              href={`https://wa.me/919714280780?text=${encodeURIComponent(`Hi! I'd like to order: ${product.shortName} - ${product.weight} - ₹${product.price}`)}`}
               target="_blank"
               rel="noreferrer"
               className="w-full mt-2 text-center bg-[#25D366] text-white px-4 py-2.5 rounded-[8px] text-sm font-medium hover:opacity-90 transition-opacity"
@@ -93,16 +116,21 @@ function ProductCard({ product }: { product: any }) {
 export function Products() {
   const [stockFilter, setStockFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const filteredProducts = PRODUCTS.filter((product) => {
+  const filteredProducts = sortProductsByStockStatus(PRODUCTS.filter((product) => {
     if (categoryFilter !== "all" && product.category !== categoryFilter) return false;
-    if (stockFilter === "in-stock") return !product.isOutOfStock;
-    if (stockFilter === "out-of-stock") return product.isOutOfStock;
+    if (stockFilter === "in-stock") return hasInStockVariant(product);
+    if (stockFilter === "out-of-stock") return hasOutOfStockVariant(product);
     return true;
-  });
+  }));
   const sections = PRODUCT_SECTIONS.map((section) => ({
     ...section,
     products: filteredProducts.filter((product) => product.category === section.category),
-  })).filter((section) => section.products.length > 0);
+  }))
+    .filter((section) => section.products.length > 0)
+    .sort((first, second) => {
+      if (categoryFilter !== "all") return 0;
+      return Number(first.products.every((product) => product.isOutOfStock)) - Number(second.products.every((product) => product.isOutOfStock));
+    });
 
   return (
   <motion.div initial="hidden" animate="visible" exit="exit" variants={productsVariants} className="py-12 lg:py-16 px-4 sm:px-6 lg:px-20 bg-bg-cream min-h-screen">

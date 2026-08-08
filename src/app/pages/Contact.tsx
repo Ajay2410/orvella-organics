@@ -77,7 +77,7 @@ export function Contact() {
               <div className="flex flex-col">
                 <span className="font-heading font-bold text-lg text-text-dark">WhatsApp Support</span>
                 <span className="font-body text-text-muted">+91 97142 80780</span>
-                <a href="https://wa.me/916354726401" target="_blank" rel="noreferrer" className="text-[#25D366] font-medium text-sm mt-1 hover:underline">Chat with us</a>
+                <a href="https://wa.me/919714280780" target="_blank" rel="noreferrer" className="text-[#25D366] font-medium text-sm mt-1 hover:underline">Chat with us</a>
               </div>
             </div>
 
@@ -87,7 +87,7 @@ export function Contact() {
               </div>
               <div className="flex flex-col">
                 <span className="font-heading font-bold text-lg text-text-dark">Email Us</span>
-                <span className="font-body text-text-muted">hello@orvellaorganics.com</span>
+                <span className="font-body text-text-muted">orvellaorganics@gmail.com</span>
               </div>
             </div>
 
@@ -97,7 +97,7 @@ export function Contact() {
               </div>
               <div className="flex flex-col">
                 <span className="font-heading font-bold text-lg text-text-dark">Office Location</span>
-                <span className="font-body text-text-muted">123 Organic Lane, Green Valley<br/>Mumbai, Maharashtra 400001</span>
+                <span className="font-body text-text-muted">Surat, Gujarat<br/>Pin code: 395006</span>
               </div>
             </div>
 
@@ -112,14 +112,6 @@ export function Contact() {
             </div>
           </div>
 
-          {/* Map Placeholder */}
-          <div className="w-full h-56 lg:h-64 bg-[#E8E0D5] rounded-[18px] overflow-hidden relative">
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="font-heading font-bold text-text-muted">Map View Disabled in Preview</span>
-            </div>
-            {/* Real map iframe goes here in production */}
-          </div>
-          
         </div>
       </div>
     </div>
