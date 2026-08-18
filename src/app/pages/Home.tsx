@@ -1,57 +1,65 @@
 import { Link } from "react-router";
 import { Leaf, Sun, PackageSearch, Droplet, Zap, Heart, Instagram } from "lucide-react";
-import { useState } from "react";
 import { motion } from "motion/react";
-import { useCart } from "../cart/CartContext";
 import { homeVariants } from "../animations";
+import { PRODUCTS, sortProductsByStockStatus } from "../data/products";
 
-const PRODUCTS = [
-  { id: "chikoo", name: "Dehydrated Chikoo", price: 149, category: "Fruit", img: "https://images.unsplash.com/photo-1769425158355-86d35ad889a7?q=80&w=800&auto=format&fit=crop" },
-  { id: "apple", name: "Dehydrated Apple", price: 179, category: "Fruit", img: "https://images.unsplash.com/photo-1763140877786-5dc3287a6629?q=80&w=800&auto=format&fit=crop" },
-  { id: "mango", name: "Dehydrated Mango", price: 199, category: "Fruit", img: "https://images.unsplash.com/photo-1770124129809-fe1fe6b7c23e?q=80&w=800&auto=format&fit=crop" },
-  { id: "jamun", name: "Dehydrated Jamun", price: 219, category: "Fruit", img: "https://images.unsplash.com/photo-1759436738386-e2e743a11fc7?q=80&w=800&auto=format&fit=crop" },
-];
+function getStockBadgeClass(product: any) {
+  return product.isOutOfStock ? "bg-[#8B3E16]" : "bg-primary";
+}
+
+function PriceBlock({ product }: { product: any }) {
+  if (!product.price) {
+    return <span className="font-body font-bold text-[#8B3E16] text-lg">{product.stockStatus}</span>;
+  }
+
+  return (
+    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 font-body">
+      <span className="font-bold text-primary text-lg">₹{product.price}</span>
+      {product.mrp && <span className="text-xs text-text-muted line-through">₹{product.mrp}</span>}
+      {product.discount && <span className="text-xs font-bold text-[#8B3E16]">{product.discount} off</span>}
+      {product.unitPrice && <span className="basis-full text-xs text-text-muted">{product.unitPrice}</span>}
+    </div>
+  );
+}
 
 function ProductCard({ product }: { product: any }) {
-  const [weight, setWeight] = useState("100g");
-  const { add } = useCart();
-  const [isAdding, setIsAdding] = useState(false);
-  
-  const handleAdd = () => {
-    setIsAdding(true);
-    add({ id: product.id, name: product.name, price: product.price, img: product.img });
-    setTimeout(() => setIsAdding(false), 380);
-  };
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.5 }}
-      animate={isAdding ? { scale: 1.03, boxShadow: '0 14px 40px rgba(59,130,246,0.14)' } : { scale: 1, boxShadow: '0 0 0 rgba(0,0,0,0)' }}
       className="bg-bg-card rounded-[16px] p-4 flex flex-col gap-4 shadow-[0_2px_16px_rgba(0,0,0,0.07)]"
     >
       <Link to={`/products/${product.id}`} className="block relative aspect-square rounded-[12px] overflow-hidden bg-white">
-        <img src={product.img} alt={product.name} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+        <img src={product.heroImage} alt={product.shortName} className="w-full h-full object-contain hover:scale-105 transition-transform duration-500" />
+        <span className={`absolute top-3 left-3 ${getStockBadgeClass(product)} text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider`}>
+          {product.stockStatus}
+        </span>
       </Link>
       <div className="flex flex-col gap-2">
-        <Link to={`/products/${product.id}`}><h3 className="font-heading font-bold text-lg text-text-dark">{product.name}</h3></Link>
-        <div className="flex gap-2">
-          {["50g", "100g", "250g"].map((w) => (
-            <button 
-              key={w} 
-              onClick={() => setWeight(w)}
-              className={`px-3 py-1 rounded-full text-xs font-medium font-body transition-colors ${weight === w ? 'bg-primary text-white' : 'bg-white text-text-muted hover:bg-primary/10 border border-transparent'}`}
+        <Link to={`/products/${product.id}`}><h3 className="font-heading font-bold text-lg text-text-dark">{product.shortName}</h3></Link>
+        <div className="flex flex-wrap gap-2">
+          {product.variants?.map((variant: any) => (
+            <span
+              key={variant.id}
+              className={`px-3 py-1 rounded-full text-xs font-medium font-body border ${
+                variant.isOutOfStock
+                  ? "bg-white text-[#8B3E16] border-[#8B3E16]/30"
+                  : "bg-primary text-white border-primary"
+              }`}
             >
-              {w}
-            </button>
+              {variant.label}
+            </span>
           ))}
+          <span className="px-3 py-1 rounded-full text-xs font-medium font-body bg-white text-text-muted border border-[#E8E0D5]">Vegetarian</span>
         </div>
         <div className="flex items-center justify-between mt-2">
-          <span className="font-body font-bold text-primary text-lg">₹{product.price}</span>
-          <button onClick={handleAdd} className="bg-primary text-white px-4 py-2 rounded-[8px] text-sm font-medium hover:bg-primary-dark transition-colors">
-            Add to Cart
-          </button>
+          <PriceBlock product={product} />
+          <Link to={`/products/${product.id}`} className="bg-primary text-white px-4 py-2 rounded-[8px] text-sm font-medium hover:bg-primary-dark transition-colors">
+            View Details
+          </Link>
         </div>
       </div>
     </motion.div>
@@ -62,7 +70,7 @@ export function Home() {
   return (
   <motion.div initial="hidden" animate="visible" exit="exit" variants={homeVariants} className="flex flex-col">
       {/* Hero Section */}
-      <section className="relative w-full bg-bg-cream py-24 px-6 lg:px-20 overflow-hidden">
+      <section className="relative w-full bg-bg-cream py-14 lg:py-18 px-4 sm:px-6 lg:px-20 overflow-hidden">
         {/* Decorative elements - simple mock representations */}
         <div className="absolute top-10 right-10 w-64 h-64 bg-primary-light/10 rounded-full blur-3xl"></div>
         <div className="absolute bottom-10 right-1/4 w-48 h-48 bg-peach/30 rounded-full blur-2xl"></div>
@@ -74,11 +82,11 @@ export function Home() {
         transition={{ duration: 0.6, delay: 0.1 }}
         className="flex flex-col gap-6 max-w-xl"
       >
-        <h1 className="font-heading font-bold text-5xl lg:text-[56px] leading-[1.1] text-text-dark">
+        <h1 className="font-heading font-bold text-4xl sm:text-5xl lg:text-[52px] leading-[1.1] text-text-dark">
           Nature's Goodness, Dried to Perfection.
         </h1>
         <p className="font-body text-lg text-text-muted">
-          Premium dehydrated fruits & B12 wellness — snack smarter, live better.
+          100% natural dried fruit slices with no added sugar, no preservatives, and clean fruit-forward flavor.
         </p>
         <div className="flex flex-wrap items-center gap-4 mt-2">
           <Link to="/products" className="bg-primary text-white px-8 py-3.5 rounded-[8px] font-medium hover:bg-primary-dark transition-colors">
@@ -106,32 +114,32 @@ export function Home() {
         initial={{ opacity: 0, scale: 0.9, x: 20 }}
         animate={{ opacity: 1, scale: 1, x: 0 }}
         transition={{ duration: 0.7, delay: 0.2 }}
-        className="hidden lg:block relative h-[500px]"
+        className="hidden lg:block relative h-[440px]"
       >
-         <img src="https://images.unsplash.com/photo-1769425158355-86d35ad889a7?q=80&w=1000&auto=format&fit=crop" alt="Hero Fruits" className="w-full h-full object-cover rounded-[24px] shadow-2xl" />
+         <img src={PRODUCTS[0].images[2]} alt="Orvella Organics Dried Chickoo Slices" className="w-full h-full object-contain rounded-[24px] shadow-2xl bg-white" />
       </motion.div>
         </div>
       </section>
 
       {/* Featured Products */}
-      <section className="py-24 px-6 lg:px-20 bg-white">
+      <section className="py-14 lg:py-18 px-4 sm:px-6 lg:px-20 bg-white">
         <div className="max-w-[1440px] mx-auto">
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="font-heading font-bold text-4xl text-center text-text-dark mb-12"
+            className="font-heading font-bold text-3xl lg:text-4xl text-center text-text-dark mb-8"
           >
-            Our Bestsellers
+            Our Products
           </motion.h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {PRODUCTS.map(p => <ProductCard key={p.id} product={p} />)}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6 max-w-5xl mx-auto">
+            {sortProductsByStockStatus(PRODUCTS).map(p => <ProductCard key={p.id} product={p} />)}
           </div>
         </div>
       </section>
 
       {/* Why Orvella */}
-      <section className="py-24 px-6 lg:px-20 bg-bg-cream">
+      <section className="py-14 lg:py-18 px-4 sm:px-6 lg:px-20 bg-bg-cream">
         <motion.div 
           initial="hidden"
           whileInView="visible"
@@ -166,9 +174,9 @@ export function Home() {
         </motion.div>
       </section>
 
-      {/* B12 Spotlight */}
-      <section className="bg-primary-dark w-full py-24 px-6 lg:px-20 text-white overflow-hidden">
-        <div className="max-w-[1440px] mx-auto grid lg:grid-cols-2 gap-16 items-center">
+      {/* Product Spotlight */}
+      <section className="bg-primary-dark w-full py-14 lg:py-18 px-4 sm:px-6 lg:px-20 text-white overflow-hidden">
+        <div className="max-w-[1440px] mx-auto grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
           <motion.div 
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -177,19 +185,19 @@ export function Home() {
             className="flex flex-col gap-6"
           >
             <h2 className="font-heading font-bold text-4xl lg:text-5xl leading-tight">
-              Fuel Your Day with B12 Wellness Powder
+              Pure Dehydrated Fruit, Ready to Snack
             </h2>
             <p className="font-body text-primary-light text-lg">
-              A plant-based, natural source of energy to keep you vitalized all day long.
+              Orvella Organics dried fruit slices are made from real fruit and packed in resealable pouches for clean everyday snacking.
             </p>
             <ul className="flex flex-col gap-3 font-body text-[15px] text-[#E8E0D5] mt-4">
-              <li className="flex items-center gap-3"><Heart size={20} className="text-primary-light" /> Boosts energy levels naturally</li>
-              <li className="flex items-center gap-3"><Heart size={20} className="text-primary-light" /> Supports healthy nervous system</li>
-              <li className="flex items-center gap-3"><Heart size={20} className="text-primary-light" /> 100% Vegan-friendly & organic</li>
+              <li className="flex items-center gap-3"><Heart size={20} className="text-primary-light" /> 100% fruit content</li>
+              <li className="flex items-center gap-3"><Heart size={20} className="text-primary-light" /> No added sugar or preservatives</li>
+              <li className="flex items-center gap-3"><Heart size={20} className="text-primary-light" /> Vegetarian and vegan friendly</li>
             </ul>
             <div className="mt-6">
               <Link to="/products" className="bg-peach text-primary-dark px-8 py-3.5 rounded-[8px] font-medium hover:bg-white transition-colors inline-block">
-                Explore B12 Powder
+                View Products
               </Link>
             </div>
           </motion.div>
@@ -201,19 +209,19 @@ export function Home() {
             className="relative"
           >
             <div className="absolute inset-0 bg-primary-light opacity-20 blur-[100px] rounded-full"></div>
-            <img src="https://images.unsplash.com/photo-1625154253125-5d89afab6c7c?q=80&w=1000&auto=format&fit=crop" alt="B12 Wellness Powder" className="relative z-10 w-full max-w-md mx-auto object-cover aspect-square rounded-[24px] shadow-2xl" />
+            <img src={PRODUCTS[0].heroImage} alt="Dried Chickoo Slices pouch" className="relative z-10 w-full max-w-md mx-auto object-contain aspect-square rounded-[24px] shadow-2xl bg-white" />
           </motion.div>
         </div>
       </section>
 
       {/* How It Works */}
-      <section className="py-24 px-6 lg:px-20 bg-white">
+      <section className="py-14 lg:py-18 px-4 sm:px-6 lg:px-20 bg-white">
         <div className="max-w-[1440px] mx-auto">
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="font-heading font-bold text-4xl text-center text-text-dark mb-16"
+            className="font-heading font-bold text-3xl lg:text-4xl text-center text-text-dark mb-10"
           >
             How It Works
           </motion.h2>
@@ -252,13 +260,13 @@ export function Home() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-24 px-6 lg:px-20 bg-bg-cream">
+      <section className="py-14 lg:py-18 px-4 sm:px-6 lg:px-20 bg-bg-cream">
         <div className="max-w-[1440px] mx-auto">
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="font-heading font-bold text-4xl text-center text-text-dark mb-16"
+            className="font-heading font-bold text-3xl lg:text-4xl text-center text-text-dark mb-10"
           >
             What Our Customers Say
           </motion.h2>
@@ -273,9 +281,9 @@ export function Home() {
             className="grid md:grid-cols-3 gap-8"
           >
             {[
-              { text: "The dehydrated mangoes taste exactly like summer! My kids love them as a healthy snack for school.", name: "Priya S.", loc: "Mumbai" },
-              { text: "Started using the B12 powder in my morning smoothies. I feel so much more energetic throughout the day.", name: "Rahul M.", loc: "Bangalore" },
-              { text: "Exceptional quality. You can really tell there's no added sugar in the chikoo. Simply perfect.", name: "Anita K.", loc: "Delhi" }
+              { text: "The chickoo slices have a clean fruit taste and are easy to carry for travel.", name: "Priya S.", loc: "Mumbai" },
+              { text: "I like that it is just chickoo slices with no added sugar or preservatives.", name: "Rahul M.", loc: "Bangalore" },
+              { text: "The resealable pouch keeps the snack convenient for office and school boxes.", name: "Anita K.", loc: "Delhi" }
             ].map((t, i) => (
               <motion.div 
                 key={i} 
@@ -301,23 +309,19 @@ export function Home() {
       </section>
 
       {/* Instagram / Gallery Strip */}
-      <section className="py-24 bg-white overflow-hidden">
-        <div className="text-center mb-12">
+      <section aria-hidden="true" className="hidden py-14 lg:py-18 bg-white overflow-hidden">
+        <div className="text-center mb-8">
           <h2 className="font-heading font-bold text-3xl text-text-dark flex items-center justify-center gap-3">
             <Instagram className="text-primary" /> Follow @orvellaorganics
           </h2>
         </div>
         <div className="flex flex-wrap md:flex-nowrap gap-4 px-4 overflow-x-auto pb-8 snap-x">
           {[
-            "https://images.unsplash.com/photo-1769425158355-86d35ad889a7?q=80&w=400&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1763140877786-5dc3287a6629?q=80&w=400&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1770124129809-fe1fe6b7c23e?q=80&w=400&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1759436738386-e2e743a11fc7?q=80&w=400&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1625154253125-5d89afab6c7c?q=80&w=400&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1694487652603-18ee5406a88f?q=80&w=400&auto=format&fit=crop"
+            ...PRODUCTS[0].images,
+            PRODUCTS[0].heroImage
           ].map((img, i) => (
             <div key={i} className="min-w-[200px] w-[200px] md:min-w-[0] md:flex-1 aspect-square rounded-[16px] overflow-hidden relative group snap-center cursor-pointer">
-              <img src={img} alt="Instagram post" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+              <img src={img} alt="Dried Chickoo Slices gallery" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                 <Instagram className="text-white w-8 h-8" />
               </div>
@@ -327,13 +331,13 @@ export function Home() {
       </section>
 
       {/* Newsletter Banner */}
-      <section className="py-24 px-6 lg:px-20 bg-bg-cream">
+      <section aria-hidden="true" className="hidden py-14 lg:py-18 px-4 sm:px-6 lg:px-20 bg-bg-cream">
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="max-w-[800px] mx-auto text-center bg-white p-12 rounded-[24px] shadow-sm border border-primary-light/20"
+          className="max-w-[800px] mx-auto text-center bg-white p-6 sm:p-10 rounded-[18px] shadow-sm border border-primary-light/20"
         >
           <h2 className="font-heading font-bold text-3xl text-text-dark mb-4">Get 10% Off Your First Order</h2>
           <p className="font-body text-text-muted mb-8">Join our community for wholesome updates, exclusive offers, and nutrition tips.</p>
