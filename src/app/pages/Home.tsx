@@ -1,8 +1,9 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { Leaf, Sun, PackageSearch, Droplet, Zap, Heart, Instagram } from "lucide-react";
 import { motion } from "motion/react";
 import { homeVariants } from "../animations";
-import { PRODUCTS, sortProductsByStockStatus } from "../data/products";
+import { productService, sortProductsByStockStatus, type Product } from "../services/products/productService";
 
 function getStockBadgeClass(product: any) {
   return product.isOutOfStock ? "bg-[#8B3E16]" : "bg-primary";
@@ -67,6 +68,24 @@ function ProductCard({ product }: { product: any }) {
 }
 
 export function Home() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const featuredProducts = sortProductsByStockStatus(products);
+  const spotlightProduct = featuredProducts[0];
+
+  useEffect(() => {
+    let isMounted = true;
+
+    productService.getProducts().then((items) => {
+      if (isMounted) {
+        setProducts(items);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   return (
   <motion.div initial="hidden" animate="visible" exit="exit" variants={homeVariants} className="flex flex-col">
       {/* Hero Section */}
@@ -116,7 +135,9 @@ export function Home() {
         transition={{ duration: 0.7, delay: 0.2 }}
         className="hidden lg:block relative h-[440px]"
       >
-         <img src={PRODUCTS[0].images[2]} alt="Orvella Organics Dried Chickoo Slices" className="w-full h-full object-contain rounded-[24px] shadow-2xl bg-white" />
+         {spotlightProduct && (
+           <img src={spotlightProduct.images[2] || spotlightProduct.heroImage} alt={spotlightProduct.shortName} className="w-full h-full object-contain rounded-[24px] shadow-2xl bg-white" />
+         )}
       </motion.div>
         </div>
       </section>
@@ -133,7 +154,7 @@ export function Home() {
             Our Products
           </motion.h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6 max-w-5xl mx-auto">
-            {sortProductsByStockStatus(PRODUCTS).map(p => <ProductCard key={p.id} product={p} />)}
+            {featuredProducts.map(p => <ProductCard key={p.id} product={p} />)}
           </div>
         </div>
       </section>
@@ -209,7 +230,9 @@ export function Home() {
             className="relative"
           >
             <div className="absolute inset-0 bg-primary-light opacity-20 blur-[100px] rounded-full"></div>
-            <img src={PRODUCTS[0].heroImage} alt="Dried Chickoo Slices pouch" className="relative z-10 w-full max-w-md mx-auto object-contain aspect-square rounded-[24px] shadow-2xl bg-white" />
+            {spotlightProduct && (
+              <img src={spotlightProduct.heroImage} alt={`${spotlightProduct.shortName} pouch`} className="relative z-10 w-full max-w-md mx-auto object-contain aspect-square rounded-[24px] shadow-2xl bg-white" />
+            )}
           </motion.div>
         </div>
       </section>

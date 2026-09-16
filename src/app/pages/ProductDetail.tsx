@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { Link, Navigate, useParams } from "react-router";
 import { Leaf, PackageCheck, ShieldCheck, ChevronDown, ChevronUp } from "lucide-react";
-import { CHIKOO_PRODUCT, PRODUCTS, getDefaultProductVariant } from "../data/products";
+import { getDefaultProductVariant } from "../data/products";
+import { getDefaultLocalProduct, productService, type Product } from "../services/products/productService";
 
 function getStockBadgeClass(product: any) {
   return product.isOutOfStock ? "bg-[#8B3E16]" : "bg-primary";
@@ -61,24 +62,57 @@ function SuggestedProductCard({ product }: { product: any }) {
 
 export function ProductDetail() {
   const { id } = useParams();
-  const product = PRODUCTS.find((item) => item.id === id) || (id === "chikoo" ? CHIKOO_PRODUCT : undefined);
-  const [selectedImage, setSelectedImage] = useState(product?.heroImage || CHIKOO_PRODUCT.heroImage);
+  const [product, setProduct] = useState<Product | undefined>();
+  const [suggestedProducts, setSuggestedProducts] = useState<Product[]>([]);
+  const [defaultProductId, setDefaultProductId] = useState<string>();
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedImage, setSelectedImage] = useState("");
   const [selectedVariantId, setSelectedVariantId] = useState(getDefaultProductVariant().id);
 
   useEffect(() => {
-    if (product) {
-      setSelectedImage(product.heroImage);
-      setSelectedVariantId((product.variants?.find((variant: any) => !variant.isOutOfStock) || getDefaultProductVariant()).id);
+    let isMounted = true;
+
+    async function loadProduct() {
+      setIsLoading(true);
+      const [products, defaultProduct] = await Promise.all([
+        productService.getProducts(),
+        getDefaultLocalProduct(),
+      ]);
+      const matchedProduct = products.find((item) => item.id === id) || (id === "chikoo" ? products[0] : undefined);
+
+      if (isMounted) {
+        setProduct(matchedProduct);
+        setSuggestedProducts(products.filter((item) => item.id !== matchedProduct?.id));
+        setDefaultProductId(products[0]?.id || defaultProduct?.id);
+        if (matchedProduct) {
+          setSelectedImage(matchedProduct.heroImage);
+          setSelectedVariantId((matchedProduct.variants?.find((variant: any) => !variant.isOutOfStock) || getDefaultProductVariant()).id);
+        }
+        setIsLoading(false);
+      }
     }
-  }, [product]);
+
+    loadProduct();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [id]);
+
+  if (isLoading) {
+    return <div className="min-h-screen bg-bg-cream px-4 py-16 text-center font-body text-text-muted">Loading product...</div>;
+  }
+
+  if (!product && defaultProductId) {
+    return <Navigate to={`/products/${defaultProductId}`} replace />;
+  }
 
   if (!product) {
-    return <Navigate to={`/products/${CHIKOO_PRODUCT.id}`} replace />;
+    return <Navigate to="/products" replace />;
   }
 
   const selectedVariant = product.variants?.find((variant: any) => variant.id === selectedVariantId) || product;
   const showProductMrp = selectedVariant.id === "200g";
-  const suggestedProducts = PRODUCTS.filter((item) => item.id !== product.id);
 
   return (
     <div className="py-8 lg:py-14 px-4 sm:px-6 lg:px-20 bg-bg-cream min-h-screen">
