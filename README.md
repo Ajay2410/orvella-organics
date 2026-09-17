@@ -1,7 +1,7 @@
 
-  # Website design creation
+  # Orvella Organics
 
-  This is a code bundle for Website design creation. The original project is available at https://www.figma.com/design/tejtQWNMyMrb1CxKNHQcF7/Website-design-creation.
+  Orvella Organics is a React and Vite website for natural dehydrated fruit snacks and wellness products.
 
   ## Running the code
 
