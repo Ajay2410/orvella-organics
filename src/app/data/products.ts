@@ -57,6 +57,39 @@ export const PRODUCT_VARIANTS = [
   },
 ];
 
+export const OUT_OF_STOCK_VARIANTS = [
+  {
+    id: "100g",
+    label: "100g",
+    weight: "100g",
+    packLabel: "Pack of 1 (100g x 1)",
+    price: 149,
+    unitPrice: "₹149 / 100 g",
+    stockStatus: "Out of Stock",
+    isOutOfStock: true,
+  },
+  {
+    id: "200g",
+    label: "200g",
+    weight: "200g",
+    packLabel: "Pack of 1 (200g x 1)",
+    price: 249,
+    unitPrice: "₹124.50 / 100 g",
+    stockStatus: "Out of Stock",
+    isOutOfStock: true,
+  },
+  {
+    id: "400g",
+    label: "400g",
+    weight: "400g",
+    packLabel: "Pack of 2 (200g x 2)",
+    price: 449,
+    unitPrice: "₹112.25 / 100 g",
+    stockStatus: "Out of Stock",
+    isOutOfStock: true,
+  },
+];
+
 export function getDefaultProductVariant() {
   return PRODUCT_VARIANTS.find((variant) => !variant.isOutOfStock) || PRODUCT_VARIANTS[0];
 }
@@ -84,11 +117,11 @@ export const CHIKOO_PRODUCT = {
   packer: "ORVELLA ORGANICS",
   importer: "ORVELLA ORGANICS",
   ingredients: "Chikoo Slices",
-  stockStatus: DEFAULT_PRODUCT_VARIANT.stockStatus,
-  isOutOfStock: DEFAULT_PRODUCT_VARIANT.isOutOfStock,
-  price: DEFAULT_PRODUCT_VARIANT.price,
-  unitPrice: DEFAULT_PRODUCT_VARIANT.unitPrice,
-  variants: PRODUCT_VARIANTS,
+  stockStatus: "Out of Stock",
+  isOutOfStock: true,
+  price: 249,
+  unitPrice: "₹124.50 / 100 g",
+  variants: OUT_OF_STOCK_VARIANTS,
   images: [chikooFront, chikooBack, chikooFrontBack, chikooNutrition, chikooContact],
   heroImage: chikooFront,
   description:
@@ -158,11 +191,11 @@ export const JAMUN_PRODUCT = {
   packer: "ORVELLA ORGANICS",
   importer: "ORVELLA ORGANICS",
   ingredients: "Black Plum From India",
-  stockStatus: DEFAULT_PRODUCT_VARIANT.stockStatus,
-  isOutOfStock: DEFAULT_PRODUCT_VARIANT.isOutOfStock,
-  price: DEFAULT_PRODUCT_VARIANT.price,
-  unitPrice: DEFAULT_PRODUCT_VARIANT.unitPrice,
-  variants: PRODUCT_VARIANTS,
+  stockStatus: "Out of Stock",
+  isOutOfStock: true,
+  price: 249,
+  unitPrice: "₹124.50 / 100 g",
+  variants: OUT_OF_STOCK_VARIANTS,
   images: [jamunFront, jamunBack, jamunFrontBack, jamunNutrition, jamunContact],
   heroImage: jamunFront,
   description:
@@ -232,11 +265,11 @@ export const MANGO_PRODUCT = {
   packer: "ORVELLA ORGANICS",
   importer: "ORVELLA ORGANICS",
   ingredients: "Mango Slices",
-  stockStatus: DEFAULT_PRODUCT_VARIANT.stockStatus,
-  isOutOfStock: DEFAULT_PRODUCT_VARIANT.isOutOfStock,
-  price: DEFAULT_PRODUCT_VARIANT.price,
-  unitPrice: DEFAULT_PRODUCT_VARIANT.unitPrice,
-  variants: PRODUCT_VARIANTS,
+  stockStatus: "Out of Stock",
+  isOutOfStock: true,
+  price: 249,
+  unitPrice: "₹124.50 / 100 g",
+  variants: OUT_OF_STOCK_VARIANTS,
   images: [mangoFront, mangoBack, mangoFrontBack, mangoNutrition, mangoContact],
   heroImage: mangoFront,
   description:

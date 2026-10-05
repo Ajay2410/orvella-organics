@@ -68,7 +68,7 @@ export function ProductDetail() {
   useEffect(() => {
     if (product) {
       setSelectedImage(product.heroImage);
-      setSelectedVariantId((product.variants?.find((variant: any) => !variant.isOutOfStock) || getDefaultProductVariant()).id);
+      setSelectedVariantId((product.variants?.find((variant: any) => !variant.isOutOfStock) || product.variants?.[1] || product.variants?.[0] || getDefaultProductVariant()).id);
     }
   }, [product]);
 
