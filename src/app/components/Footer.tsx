@@ -32,6 +32,7 @@ export function Footer() {
             <Link to="/products/dried-black-plum-jamun-slices" className="text-[#E8E0D5] hover:text-white text-sm font-body transition-colors">Dried Black Plum Slices</Link>
             <Link to="/products/dried-mango-slices" className="text-[#E8E0D5] hover:text-white text-sm font-body transition-colors">Dried Mango Slices</Link>
             <Link to="/products/beetroot-powder" className="text-[#E8E0D5] hover:text-white text-sm font-body transition-colors">Beetroot Powder</Link>
+            <Link to="/products/pumpkin-powder" className="text-[#E8E0D5] hover:text-white text-sm font-body transition-colors">Pumpkin Powder</Link>
             <Link to="/products" className="text-[#E8E0D5] hover:text-white text-sm font-body transition-colors">All Products</Link>
           </div>
 

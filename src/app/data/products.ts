@@ -18,6 +18,11 @@ import beetrootBack from "../../assets/products/beetroot-back.jpg";
 import beetrootFrontBack from "../../assets/products/beetroot-front-back.jpg";
 import beetrootNutrition from "../../assets/products/beetroot-nutrition.jpg";
 import beetrootContact from "../../assets/products/beetroot-contact.jpg";
+import pumpkinFront from "../../assets/products/pumpkin-front.jpg";
+import pumpkinBack from "../../assets/products/pumpkin-back.jpg";
+import pumpkinFrontBack from "../../assets/products/pumpkin-front-back.jpg";
+import pumpkinNutrition from "../../assets/products/pumpkin-nutrition.jpg";
+import pumpkinContact from "../../assets/products/pumpkin-contact.jpg";
 
 export const PRODUCT_VARIANTS = [
   {
@@ -361,7 +366,89 @@ export const BEETROOT_PRODUCT = {
   },
 };
 
-export const PRODUCTS = [CHIKOO_PRODUCT, JAMUN_PRODUCT, MANGO_PRODUCT, BEETROOT_PRODUCT];
+export const PUMPKIN_PRODUCT = {
+  id: "pumpkin-powder",
+  name: "Pumpkin Powder",
+  shortName: "Pumpkin Powder",
+  title: "Pumpkin Powder 200 g Natural Pumpkin Powder with No Added Sugar, Gluten Free & Vegan Ingredient for Smoothies, Shakes, Baking, Soups, Curries, Gravies, Porridge and Daily Cooking Use",
+  category: "Powders",
+  flavour: "Pumpkin Powder",
+  brand: "ORVELLA ORGANICS",
+  weight: DEFAULT_PRODUCT_VARIANT.weight,
+  itemWeight: "200 Grams",
+  netQuantity: "200.0 Grams",
+  upc: "015791250688",
+  asin: "B0HBKW9P3Q",
+  partNumber: "OO - Pumpkin Powder",
+  dimensions: "10 x 5 x 10 cm",
+  countryOfOrigin: "India",
+  genericName: "Pumpkin Powder",
+  manufacturer: "ORVELLA ORGANICS",
+  packer: "ORVELLA ORGANICS",
+  importer: "ORVELLA ORGANICS",
+  itemForm: "Powder",
+  packageQuantity: "1",
+  ingredients: "Pumpkin Powder",
+  stockStatus: "In Stock",
+  isOutOfStock: false,
+  price: DEFAULT_PRODUCT_VARIANT.price,
+  mrp: 399,
+  unitPrice: DEFAULT_PRODUCT_VARIANT.unitPrice,
+  discount: "38%",
+  variants: PRODUCT_VARIANTS,
+  images: [pumpkinFront, pumpkinBack, pumpkinFrontBack, pumpkinNutrition, pumpkinContact],
+  heroImage: pumpkinFront,
+  description:
+    "Enjoy the convenience of pumpkin in an easy-to-use powdered form. This finely milled pumpkin powder is suitable for everyday cooking, beverages and baking preparations. Made with 100% natural pumpkin, with no added sugar, gluten-free, and vegan-friendly.",
+  highlights: [
+    "Natural Pumpkin Powder: Finely milled pumpkin powder made from pumpkin ingredient with natural flavor and easy preparation.",
+    "No Added Sugar Formula: Pure pumpkin powder with no added sugar; suitable for beverages, cooking and baking recipes.",
+    "Multiple Usage Options: Mix with warm water or milk; add to smoothies, shakes, soups, curries, gravies, oats and cereals.",
+    "Fine Powder Texture: Smooth powder consistency that blends easily into recipes and helps save preparation time.",
+    "Vegan & Gluten Free: Plant-based pumpkin ingredient suitable for vegan preferences and gluten-free food choices.",
+    "Convenient Alternative: Easy-to-store pumpkin powder option compared to handling fresh pumpkin for everyday recipes.",
+    "Freshness Focused Packaging: Resealable pouch packaging helps maintain product quality and allows convenient storage.",
+    "Pack Contents: Includes 100g, 200g and 400g pack options with usage instructions printed on the packaging.",
+  ],
+  features: [
+    "Pure Pumpkin Ingredient: Made from pumpkin powder with natural flavor and smooth texture",
+    "Easy To Use: Mix with water or milk and add to your favorite recipes",
+    "Versatile Cooking Option: Suitable for smoothies, shakes, soups, curries, gravies, baking and cereals",
+    "No Added Sugar: Contains no added sugar for convenient recipe preparation",
+    "Dietary Friendly: Vegan and gluten free ingredient suitable for different food preferences",
+    "Packed in a resealable pouch for easy storage and handling",
+  ],
+  usage: [
+    "Mix 1 teaspoon in warm water or milk.",
+    "Add to soups, curries, and gravies.",
+    "Use in baking (cakes, muffins, pancakes).",
+    "Blend into smoothies and shakes.",
+    "Mix into porridge or cereal.",
+  ],
+  nutrition: [
+    ["Energy", "344 kcal", "1.72"],
+    ["Protein", "6g", "11.94"],
+    ["Carbohydrate", "78g", "-"],
+    ["Total Sugar", "31g", "-"],
+    ["Added Sugar", "0g", "-"],
+    ["Total Fat", "1g", "1.21"],
+    ["Saturated Fat", "0g", "-"],
+    ["Trans Fat", "0g", "-"],
+    ["Sodium", "0mg", "-"],
+  ],
+  storage:
+    "Store in a cool and dry place away from direct sunlight. Do not buy if the seal is broken. Reseal properly once opened.",
+  legalDisclaimer:
+    "Check the packaging label before use. Individual dietary needs may vary. May not be suitable for individuals allergic to pumpkin.",
+  contact: {
+    address: "Surat, Gujarat, Pin code: 395006",
+    phone: "+91 97142 80780",
+    email: "orvellaorganics@gmail.com",
+    fssai: "20726031003417",
+  },
+};
+
+export const PRODUCTS = [CHIKOO_PRODUCT, JAMUN_PRODUCT, MANGO_PRODUCT, BEETROOT_PRODUCT, PUMPKIN_PRODUCT];
 
 export function sortProductsByStockStatus<T extends { isOutOfStock?: boolean }>(products: T[]) {
   return [...products].sort((first, second) => Number(first.isOutOfStock) - Number(second.isOutOfStock));
