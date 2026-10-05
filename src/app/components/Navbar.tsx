@@ -1,10 +1,28 @@
-import { Link } from "react-router";
-import { Menu } from "lucide-react";
+import { Link, useLocation } from "react-router";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import logoWide from "../../assets/brand/orvella-logo-wide.png";
 
+const NAV_ITEMS = [
+  { label: "Home", path: "/" },
+  { label: "Products", path: "/products", matchPrefix: true },
+  { label: "About", path: "/about" },
+  { label: "Contact", path: "/contact" },
+];
+
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
+
+  const isItemActive = (item: (typeof NAV_ITEMS)[0]) => {
+    if (item.path === "/") {
+      return location.pathname === "/";
+    }
+    if (item.matchPrefix) {
+      return location.pathname.startsWith(item.path);
+    }
+    return location.pathname === item.path;
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-white h-[84px] flex items-center border-b border-[#E8E0D5] px-4 sm:px-6 lg:px-20">
@@ -16,11 +34,26 @@ export function Navbar() {
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-8 font-body text-[15px] font-medium text-text-dark">
-          <Link to="/" className="hover:text-primary transition-colors">Home</Link>
-          <Link to="/about" className="hover:text-primary transition-colors">About</Link>
-          <Link to="/products" className="hover:text-primary transition-colors">Products</Link>
-          <Link to="/contact" className="hover:text-primary transition-colors">Contact</Link>
+        <nav className="hidden md:flex items-center gap-8 font-body text-[15px]">
+          {NAV_ITEMS.map((item) => {
+            const active = isItemActive(item);
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`relative py-1.5 transition-colors ${
+                  active
+                    ? "font-semibold text-primary"
+                    : "font-medium text-text-dark/75 hover:text-primary"
+                }`}
+              >
+                {item.label}
+                {active && (
+                  <span className="absolute -bottom-1 left-0 right-0 h-[2.5px] bg-primary rounded-full" />
+                )}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Right Icons */}
@@ -31,19 +64,32 @@ export function Navbar() {
             </svg>
           </a>
 
-          <button className="md:hidden text-text-dark" onClick={() => setIsOpen(!isOpen)}>
-            <Menu size={24} />
+          <button className="md:hidden text-text-dark" onClick={() => setIsOpen(!isOpen)} aria-label="Toggle Navigation Menu">
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </div>
       
       {/* Mobile Nav */}
       {isOpen && (
-        <div className="absolute top-[84px] left-0 right-0 bg-white border-b border-[#E8E0D5] p-4 flex flex-col gap-4 md:hidden shadow-lg">
-          <Link to="/" className="text-text-dark font-medium px-2 py-1" onClick={() => setIsOpen(false)}>Home</Link>
-          <Link to="/about" className="text-text-dark font-medium px-2 py-1" onClick={() => setIsOpen(false)}>About</Link>
-          <Link to="/products" className="text-text-dark font-medium px-2 py-1" onClick={() => setIsOpen(false)}>Products</Link>
-          <Link to="/contact" className="text-text-dark font-medium px-2 py-1" onClick={() => setIsOpen(false)}>Contact</Link>
+        <div className="absolute top-[84px] left-0 right-0 bg-white border-b border-[#E8E0D5] p-4 flex flex-col gap-2 md:hidden shadow-lg">
+          {NAV_ITEMS.map((item) => {
+            const active = isItemActive(item);
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`px-3 py-2 rounded-[8px] text-[15px] transition-colors ${
+                  active
+                    ? "bg-primary/10 text-primary font-semibold"
+                    : "text-text-dark font-medium hover:bg-bg-cream"
+                }`}
+                onClick={() => setIsOpen(false)}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
         </div>
       )}
     </header>
