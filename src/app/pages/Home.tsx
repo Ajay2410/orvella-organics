@@ -14,7 +14,7 @@ function PriceBlock({ product }: { product: any }) {
   }
 
   return (
-    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 font-body">
+    <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5 font-body">
       <span className="font-bold text-primary text-lg">₹{product.price}</span>
       {product.mrp && <span className="text-xs text-text-muted line-through">₹{product.mrp}</span>}
       {product.discount && <span className="text-xs font-bold text-[#8B3E16]">{product.discount} off</span>}
@@ -30,7 +30,7 @@ function ProductCard({ product }: { product: any }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.5 }}
-      className="bg-bg-card rounded-[16px] p-4 flex flex-col gap-4 shadow-[0_2px_16px_rgba(0,0,0,0.07)]"
+      className="bg-bg-card rounded-[16px] p-4 flex flex-col justify-between gap-4 shadow-[0_2px_16px_rgba(0,0,0,0.07)]"
     >
       <Link to={`/products/${product.id}`} className="block relative aspect-square rounded-[12px] overflow-hidden bg-white">
         <img src={product.heroImage} alt={product.shortName} className="w-full h-full object-contain hover:scale-105 transition-transform duration-500" />
@@ -38,25 +38,30 @@ function ProductCard({ product }: { product: any }) {
           {product.stockStatus}
         </span>
       </Link>
-      <div className="flex flex-col gap-2">
-        <Link to={`/products/${product.id}`}><h3 className="font-heading font-bold text-lg text-text-dark">{product.shortName}</h3></Link>
-        <div className="flex flex-wrap gap-2">
-          {product.variants?.map((variant: any) => (
-            <span
-              key={variant.id}
-              className={`px-3 py-1 rounded-full text-xs font-medium font-body border ${
-                variant.isOutOfStock
-                  ? "bg-white text-[#8B3E16] border-[#8B3E16]/30"
-                  : "bg-primary text-white border-primary"
-              }`}
-            >
-              {variant.label}
-            </span>
-          ))}
+      <div className="flex flex-col gap-2 flex-1 justify-between">
+        <div className="flex flex-col gap-2">
+          <Link to={`/products/${product.id}`}><h3 className="font-heading font-bold text-lg text-text-dark">{product.shortName}</h3></Link>
+          <div className="flex flex-wrap gap-2">
+            {product.variants?.map((variant: any) => (
+              <span
+                key={variant.id}
+                className={`px-3 py-1 rounded-full text-xs font-medium font-body border ${
+                  variant.isOutOfStock
+                    ? "bg-white text-[#8B3E16] border-[#8B3E16]/30"
+                    : "bg-primary text-white border-primary"
+                }`}
+              >
+                {variant.label}
+              </span>
+            ))}
+          </div>
         </div>
-        <div className="flex items-center justify-between mt-2">
+        <div className="flex items-center justify-between gap-3 mt-2">
           <PriceBlock product={product} />
-          <Link to={`/products/${product.id}`} className="bg-primary text-white px-4 py-2 rounded-[8px] text-sm font-medium hover:bg-primary-dark transition-colors">
+          <Link
+            to={`/products/${product.id}`}
+            className="shrink-0 whitespace-nowrap bg-primary text-white px-4 py-2 rounded-[8px] text-sm font-medium hover:bg-primary-dark transition-colors"
+          >
             View Details
           </Link>
         </div>
