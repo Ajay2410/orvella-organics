@@ -53,7 +53,6 @@ function ProductCard({ product }: { product: any }) {
               {variant.label}
             </span>
           ))}
-          <span className="px-3 py-1 rounded-full text-xs font-medium font-body bg-white text-text-muted border border-[#E8E0D5]">Vegetarian</span>
         </div>
         <div className="flex items-center justify-between mt-2">
           <PriceBlock product={product} />
