@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { Link, Navigate, useParams } from "react-router";
-import { Leaf, PackageCheck, ShieldCheck, ChevronDown, ChevronUp } from "lucide-react";
+import { Leaf, PackageCheck, ShieldCheck, ChevronDown, ChevronUp, Truck } from "lucide-react";
 import { CHIKOO_PRODUCT, PRODUCTS, getDefaultProductVariant } from "../data/products";
 
 function getStockBadgeClass(product: any) {
@@ -150,20 +150,25 @@ export function ProductDetail() {
                 </>
               ) : (
                 <>
-                  <div className="flex flex-wrap items-end gap-3">
+                  <div className="flex flex-wrap items-baseline gap-2">
                     <span className="font-body font-bold text-primary text-[34px] leading-none">₹{selectedVariant.price}</span>
                     {showProductMrp && product.mrp && <span className="font-body text-text-muted line-through">M.R.P.: ₹{product.mrp}</span>}
                     {showProductMrp && product.discount && <span className="font-body font-bold text-[#8B3E16]">{product.discount} off</span>}
+                    <span className="font-body text-sm text-text-muted font-medium">(+ Shipping extra)</span>
                   </div>
                   {selectedVariant.unitPrice && <p className="font-body text-sm text-text-muted">{selectedVariant.unitPrice}</p>}
                   <a
-                    href={`https://wa.me/919714280780?text=${encodeURIComponent(`Hi! I'd like to order: ${product.shortName} - ${selectedVariant.weight}${selectedVariant.packLabel ? ` (${selectedVariant.packLabel})` : ""} - ₹${selectedVariant.price}`)}`}
+                    href={`https://wa.me/919714280780?text=${encodeURIComponent(`Hi! I'd like to order: ${product.shortName} - ${selectedVariant.weight}${selectedVariant.packLabel ? ` (${selectedVariant.packLabel})` : ""} - ₹${selectedVariant.price}. Please let me know the shipping charges for my pincode.`)}`}
                     target="_blank"
                     rel="noreferrer"
                     className="w-full flex items-center justify-center gap-3 bg-[#25D366] text-white py-4 rounded-[10px] font-body font-bold text-lg hover:bg-[#20bd5a] transition-colors shadow-lg shadow-[#25D366]/20"
                   >
                     Order on WhatsApp
                   </a>
+                  <p className="font-body text-xs text-text-muted text-center flex items-center justify-center gap-1.5 mt-0.5">
+                    <Truck size={14} className="text-primary shrink-0" />
+                    <span>Shipping charges are extra & confirmed on WhatsApp based on your delivery address.</span>
+                  </p>
                 </>
               )}
             </div>
@@ -258,6 +263,14 @@ export function ProductDetail() {
 
             <Accordion title="Storage Information">
               <p>{product.storage}</p>
+            </Accordion>
+
+            <Accordion title="Shipping & Delivery">
+              <ul className="space-y-2 list-disc pl-5">
+                <li><strong>Order via WhatsApp:</strong> All orders are received and handled directly on WhatsApp for prompt support.</li>
+                <li><strong>Shipping Charges Extra:</strong> Delivery charges are extra and determined dynamically based on your destination city and pincode.</li>
+                <li><strong>Order Confirmation:</strong> Once you share your delivery location on WhatsApp, our team will calculate the shipping cost and share your final total prior to dispatch.</li>
+              </ul>
             </Accordion>
 
             <Accordion title="Legal Disclaimer">

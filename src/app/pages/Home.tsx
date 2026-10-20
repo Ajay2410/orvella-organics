@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { Leaf, Sun, PackageSearch, Droplet, Zap, Heart, Instagram } from "lucide-react";
+import { Leaf, Sun, Truck, Droplet, Zap, Heart, Instagram } from "lucide-react";
 import { motion } from "motion/react";
 import { homeVariants } from "../animations";
 import { PRODUCTS, sortProductsByStockStatus } from "../data/products";
@@ -18,6 +18,7 @@ function PriceBlock({ product }: { product: any }) {
       <span className="font-bold text-primary text-lg">₹{product.price}</span>
       {product.mrp && <span className="text-xs text-text-muted line-through">₹{product.mrp}</span>}
       {product.discount && <span className="text-xs font-bold text-[#8B3E16]">{product.discount} off</span>}
+      <span className="text-xs text-text-muted">(Shipping extra)</span>
       {product.unitPrice && <span className="basis-full text-xs text-text-muted">{product.unitPrice}</span>}
     </div>
   );
@@ -109,7 +110,7 @@ export function Home() {
             <Zap size={18} className="text-primary" /> No Preservatives
           </div>
           <div className="flex items-center gap-2 text-sm font-medium text-text-dark">
-            <PackageSearch size={18} className="text-primary" /> Free Shipping ₹499+
+            <Truck size={18} className="text-primary" /> Shipping Extra as per Location
           </div>
         </div>
       </motion.div>
