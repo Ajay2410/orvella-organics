@@ -158,7 +158,7 @@ export function ProductDetail() {
                   </div>
                   {selectedVariant.unitPrice && <p className="font-body text-sm text-text-muted">{selectedVariant.unitPrice}</p>}
                   <a
-                    href={`https://wa.me/919714280780?text=${encodeURIComponent(`Hi! I'd like to order: ${product.shortName} - ${selectedVariant.weight}${selectedVariant.packLabel ? ` (${selectedVariant.packLabel})` : ""} - ₹${selectedVariant.price}. Please let me know the shipping charges for my pincode.`)}`}
+                    href={`https://wa.me/919714280780?text=${encodeURIComponent(`Hi Orvella Organics! 🌿\n\nI would like to place an order:\n• Product: ${product.shortName}\n• Variant: ${selectedVariant.weight}${selectedVariant.packLabel ? ` (${selectedVariant.packLabel})` : ""}\n• Price: ₹${selectedVariant.price} (+ shipping)\n\nPlease share the total amount with shipping charges for my delivery pincode.`)}`}
                     target="_blank"
                     rel="noreferrer"
                     className="w-full flex items-center justify-center gap-3 bg-[#25D366] text-white py-4 rounded-[10px] font-body font-bold text-lg hover:bg-[#20bd5a] transition-colors shadow-lg shadow-[#25D366]/20"

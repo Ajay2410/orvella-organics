@@ -99,7 +99,7 @@ function ProductCard({ product }: { product: any }) {
             <button disabled className="w-full mt-2 text-center bg-[#D8CEC2] text-text-muted px-4 py-2.5 rounded-[8px] text-sm font-medium cursor-not-allowed">Out of Stock</button>
           ) : (
             <a
-              href={`https://wa.me/919714280780?text=${encodeURIComponent(`Hi! I'd like to order: ${product.shortName} - ${product.weight} - ₹${product.price}. Please let me know the shipping charges for my pincode.`)}`}
+              href={`https://wa.me/919714280780?text=${encodeURIComponent(`Hi Orvella Organics! 🌿\n\nI would like to place an order:\n• Product: ${product.shortName}\n• Pack: ${product.weight || "Standard pack"}\n• Price: ₹${product.price} (+ shipping)\n\nPlease share the total amount with shipping charges for my delivery pincode.`)}`}
               target="_blank"
               rel="noreferrer"
               className="w-full mt-2 text-center bg-[#25D366] text-white px-4 py-2.5 rounded-[8px] text-sm font-medium hover:opacity-90 transition-opacity"

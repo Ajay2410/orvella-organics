@@ -9,12 +9,25 @@ export function Contact() {
         <div className="bg-white p-6 lg:p-8 rounded-[18px] shadow-[0_2px_16px_rgba(0,0,0,0.05)] border border-[#E8E0D5]/50">
           <h1 className="font-heading font-bold text-4xl text-text-dark mb-8">Get in Touch</h1>
           
-          <form className="flex flex-col gap-6" onSubmit={e => e.preventDefault()}>
+          <form
+            className="flex flex-col gap-6"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const form = e.currentTarget;
+              const name = (form.elements.namedItem("name") as HTMLInputElement)?.value || "";
+              const email = (form.elements.namedItem("email") as HTMLInputElement)?.value || "";
+              const phone = (form.elements.namedItem("phone") as HTMLInputElement)?.value || "";
+              const message = (form.elements.namedItem("message") as HTMLTextAreaElement)?.value || "";
+              const text = `Hi Orvella Organics! 🌿\n\nI am contacting you from your website contact form:\n• Name: ${name}\n• Email: ${email}${phone ? `\n• Phone: ${phone}` : ""}\n\nMessage:\n${message}`;
+              window.open(`https://wa.me/919714280780?text=${encodeURIComponent(text)}`, "_blank");
+            }}
+          >
             <div className="flex flex-col gap-2">
               <label htmlFor="name" className="font-body text-sm font-medium text-text-dark">Full Name</label>
               <input 
                 type="text" 
                 id="name" 
+                name="name"
                 placeholder="John Doe" 
                 className="px-5 py-3.5 rounded-[12px] border border-[#E8E0D5] bg-bg-cream focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-body"
                 required
@@ -27,6 +40,7 @@ export function Contact() {
                 <input 
                   type="email" 
                   id="email" 
+                  name="email"
                   placeholder="john@example.com" 
                   className="px-5 py-3.5 rounded-[12px] border border-[#E8E0D5] bg-bg-cream focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-body"
                   required
@@ -37,6 +51,7 @@ export function Contact() {
                 <input 
                   type="tel" 
                   id="phone" 
+                  name="phone"
                   placeholder="+91 97142 80780" 
                   className="px-5 py-3.5 rounded-[12px] border border-[#E8E0D5] bg-bg-cream focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-body"
                 />
@@ -47,6 +62,7 @@ export function Contact() {
               <label htmlFor="message" className="font-body text-sm font-medium text-text-dark">Message</label>
               <textarea 
                 id="message" 
+                name="message"
                 rows={5} 
                 placeholder="How can we help you?" 
                 className="px-5 py-3.5 rounded-[12px] border border-[#E8E0D5] bg-bg-cream focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-body resize-none"
@@ -55,7 +71,7 @@ export function Contact() {
             </div>
             
             <button type="submit" className="bg-primary text-white py-4 rounded-[12px] font-body font-bold text-lg hover:bg-primary-dark transition-colors mt-2 shadow-lg shadow-primary/20">
-              Send Message
+              Send Message on WhatsApp
             </button>
           </form>
         </div>
@@ -77,7 +93,14 @@ export function Contact() {
               <div className="flex flex-col">
                 <span className="font-heading font-bold text-lg text-text-dark">WhatsApp Support</span>
                 <span className="font-body text-text-muted">+91 97142 80780</span>
-                <a href="https://wa.me/919714280780" target="_blank" rel="noreferrer" className="text-[#25D366] font-medium text-sm mt-1 hover:underline">Chat with us</a>
+                <a
+                  href={`https://wa.me/919714280780?text=${encodeURIComponent("Hi Orvella Organics! 🌿 I am contacting you from your contact page. I'd like to get in touch regarding your products and ordering.")}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[#25D366] font-medium text-sm mt-1 hover:underline"
+                >
+                  Chat with us
+                </a>
               </div>
             </div>
 
