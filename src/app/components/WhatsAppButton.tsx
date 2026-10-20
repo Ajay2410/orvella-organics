@@ -1,7 +1,9 @@
 export function WhatsAppButton() {
+  const defaultMessage = "Hi Orvella Organics! 🌿 I am visiting your website and would like to know more about your natural dried fruit products and place an order.";
+
   return (
     <a 
-      href="https://wa.me/919714280780" 
+      href={`https://wa.me/919714280780?text=${encodeURIComponent(defaultMessage)}`} 
       target="_blank" 
       rel="noreferrer"
       className="fixed bottom-6 right-6 z-50 group"

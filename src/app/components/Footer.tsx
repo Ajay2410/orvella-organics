@@ -50,7 +50,17 @@ export function Footer() {
           <div className="flex flex-col gap-4">
             <h4 className="font-heading font-bold text-lg text-peach mb-2">Contact</h4>
             <p className="text-[#E8E0D5] text-sm font-body">Email: orvellaorganics@gmail.com</p>
-            <p className="text-[#E8E0D5] text-sm font-body">Phone: +91 97142 80780</p>
+            <p className="text-[#E8E0D5] text-sm font-body">
+              WhatsApp / Phone:{" "}
+              <a
+                href={`https://wa.me/919714280780?text=${encodeURIComponent("Hi Orvella Organics! 🌿 I am visiting your website and have an inquiry about your products and ordering.")}`}
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-white transition-colors underline decoration-peach/40 underline-offset-2"
+              >
+                +91 97142 80780
+              </a>
+            </p>
             <p className="text-[#E8E0D5] text-sm font-body mt-2">
               Surat, Gujarat<br />
               Pin code: 395006
