@@ -1,25 +1,56 @@
-import { Mail, Phone, MapPin, Clock } from "lucide-react";
+import { useState } from "react";
+import { Mail, Phone, MapPin, Clock, CheckCircle2 } from "lucide-react";
+import { inquiryService } from "../services/inquiries/inquiryService";
+import { useAuth } from "../hooks/useAuth";
 
 export function Contact() {
+  const { user } = useAuth();
+  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   return (
     <div className="py-12 lg:py-16 px-4 sm:px-6 lg:px-20 bg-bg-cream min-h-screen">
       <div className="max-w-[1440px] mx-auto grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
         
         {/* Left: Contact Form */}
         <div className="bg-white p-6 lg:p-8 rounded-[18px] shadow-[0_2px_16px_rgba(0,0,0,0.05)] border border-[#E8E0D5]/50">
-          <h1 className="font-heading font-bold text-4xl text-text-dark mb-8">Get in Touch</h1>
-          
+          <h1 className="font-heading font-bold text-4xl text-text-dark mb-4">Get in Touch</h1>
+          <p className="font-body text-sm text-text-muted mb-8">
+            Send us a message below. Your inquiry is saved into our support system and forwarded to our WhatsApp for fast assistance.
+          </p>
+
+          {submitted && (
+            <div className="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 flex items-start gap-3">
+              <CheckCircle2 size={20} className="text-emerald-600 shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-semibold text-emerald-900">Message sent successfully!</p>
+                <p className="text-xs text-emerald-700 mt-0.5">
+                  Your inquiry has been recorded. Our team will review your message shortly.
+                </p>
+              </div>
+            </div>
+          )}
+
           <form
             className="flex flex-col gap-6"
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
+              setSubmitting(true);
               const form = e.currentTarget;
               const name = (form.elements.namedItem("name") as HTMLInputElement)?.value || "";
               const email = (form.elements.namedItem("email") as HTMLInputElement)?.value || "";
               const phone = (form.elements.namedItem("phone") as HTMLInputElement)?.value || "";
               const message = (form.elements.namedItem("message") as HTMLTextAreaElement)?.value || "";
+
+              // 1. Asynchronously save to Supabase contact_inquiries table
+              await inquiryService.submitInquiry(name, email, phone, message, user?.id);
+
+              // 2. Open WhatsApp with pre-filled message
               const text = `Hi Orvella Organics! 🌿\n\nI am contacting you from your website contact form:\n• Name: ${name}\n• Email: ${email}${phone ? `\n• Phone: ${phone}` : ""}\n\nMessage:\n${message}`;
               window.open(`https://wa.me/919714280780?text=${encodeURIComponent(text)}`, "_blank");
+
+              setSubmitting(false);
+              setSubmitted(true);
+              form.reset();
             }}
           >
             <div className="flex flex-col gap-2">
@@ -70,8 +101,19 @@ export function Contact() {
               ></textarea>
             </div>
             
-            <button type="submit" className="bg-primary text-white py-4 rounded-[12px] font-body font-bold text-lg hover:bg-primary-dark transition-colors mt-2 shadow-lg shadow-primary/20">
-              Send Message on WhatsApp
+            <button
+              type="submit"
+              disabled={submitting}
+              className="bg-primary text-white py-4 rounded-[12px] font-body font-bold text-lg hover:bg-primary-dark transition-colors mt-2 shadow-lg shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-60"
+            >
+              {submitting ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span>Submitting...</span>
+                </>
+              ) : (
+                <span>Send Message on WhatsApp</span>
+              )}
             </button>
           </form>
         </div>

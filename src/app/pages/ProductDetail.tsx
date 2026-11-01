@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
-import { Link, Navigate, useParams } from "react-router";
-import { Leaf, PackageCheck, ShieldCheck, ChevronDown, ChevronUp, Truck } from "lucide-react";
+import { Link, Navigate, useParams, useNavigate } from "react-router";
+import { Leaf, PackageCheck, ShieldCheck, ChevronDown, ChevronUp, Truck, CreditCard, X, AlertCircle } from "lucide-react";
 import { CHIKOO_PRODUCT, PRODUCTS, getDefaultProductVariant } from "../data/products";
+import { productService, type Product } from "../services/products/productService";
+import { stripeService } from "../services/stripe/stripeService";
+import { useAuth } from "../hooks/useAuth";
 
 function getStockBadgeClass(product: any) {
   return product.isOutOfStock ? "bg-[#8B3E16]" : "bg-primary";
@@ -61,7 +64,39 @@ function SuggestedProductCard({ product }: { product: any }) {
 
 export function ProductDetail() {
   const { id } = useParams();
-  const product = PRODUCTS.find((item) => item.id === id) || (id === "chikoo" ? CHIKOO_PRODUCT : undefined);
+  const navigate = useNavigate();
+  const { user, profile } = useAuth();
+  const [allProducts, setAllProducts] = useState<Product[]>(PRODUCTS);
+
+  // Online Checkout Modal State
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [checkoutQuantity, setCheckoutQuantity] = useState(1);
+  const [checkoutName, setCheckoutName] = useState('');
+  const [checkoutEmail, setCheckoutEmail] = useState('');
+  const [checkoutPhone, setCheckoutPhone] = useState('');
+  const [checkoutAddress, setCheckoutAddress] = useState('');
+  const [checkoutCity, setCheckoutCity] = useState('');
+  const [checkoutPincode, setCheckoutPincode] = useState('');
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      if (profile?.full_name) setCheckoutName(profile.full_name);
+      if (user.email) setCheckoutEmail(user.email);
+      if (profile?.phone) setCheckoutPhone(profile.phone);
+    }
+  }, [user, profile]);
+
+  useEffect(() => {
+    productService.getProducts().then((data) => {
+      if (data && data.length > 0) {
+        setAllProducts(data);
+      }
+    });
+  }, []);
+
+  const product = allProducts.find((item) => item.id === id) || (id === "chikoo" ? allProducts[0] : undefined);
   const [selectedImage, setSelectedImage] = useState(product?.heroImage || CHIKOO_PRODUCT.heroImage);
   const [selectedVariantId, setSelectedVariantId] = useState(getDefaultProductVariant().id);
 
@@ -78,7 +113,7 @@ export function ProductDetail() {
 
   const selectedVariant = product.variants?.find((variant: any) => variant.id === selectedVariantId) || product;
   const showProductMrp = selectedVariant.id === "200g";
-  const suggestedProducts = PRODUCTS.filter((item) => item.id !== product.id);
+  const suggestedProducts = allProducts.filter((item) => item.id !== product.id);
 
   return (
     <div className="py-8 lg:py-14 px-4 sm:px-6 lg:px-20 bg-bg-cream min-h-screen">
@@ -157,17 +192,31 @@ export function ProductDetail() {
                     <span className="font-body text-sm text-text-muted font-medium">(+ Shipping extra)</span>
                   </div>
                   {selectedVariant.unitPrice && <p className="font-body text-sm text-text-muted">{selectedVariant.unitPrice}</p>}
-                  <a
-                    href={`https://wa.me/919714280780?text=${encodeURIComponent(`Hi Orvella Organics! 🌿\n\nI would like to place an order:\n• Product: ${product.shortName}\n• Variant: ${selectedVariant.weight}${selectedVariant.packLabel ? ` (${selectedVariant.packLabel})` : ""}\n• Price: ₹${selectedVariant.price} (+ shipping)\n\nPlease share the total amount with shipping charges for my delivery pincode.`)}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="w-full flex items-center justify-center gap-3 bg-[#25D366] text-white py-4 rounded-[10px] font-body font-bold text-lg hover:bg-[#20bd5a] transition-colors shadow-lg shadow-[#25D366]/20"
-                  >
-                    Order on WhatsApp
-                  </a>
+                  
+                  {/* Dual Action: Online Payment + WhatsApp */}
+                  <div className="flex flex-col gap-2.5">
+                    <button
+                      type="button"
+                      onClick={() => setIsCheckoutOpen(true)}
+                      className="w-full flex items-center justify-center gap-3 bg-primary text-white py-4 rounded-[10px] font-body font-bold text-lg hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
+                    >
+                      <CreditCard size={20} />
+                      <span>Pay Online (Cards / UPI)</span>
+                    </button>
+
+                    <a
+                      href={`https://wa.me/919714280780?text=${encodeURIComponent(`Hi Orvella Organics! 🌿\n\nI would like to place an order:\n• Product: ${product.shortName}\n• Variant: ${selectedVariant.weight}${selectedVariant.packLabel ? ` (${selectedVariant.packLabel})` : ""}\n• Price: ₹${selectedVariant.price} (+ shipping)\n\nPlease share the total amount with shipping charges for my delivery pincode.`)}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="w-full flex items-center justify-center gap-3 bg-[#25D366] text-white py-3 rounded-[10px] font-body font-bold text-base hover:bg-[#20bd5a] transition-colors"
+                    >
+                      Order on WhatsApp
+                    </a>
+                  </div>
+
                   <p className="font-body text-xs text-text-muted text-center flex items-center justify-center gap-1.5 mt-0.5">
                     <Truck size={14} className="text-primary shrink-0" />
-                    <span>Shipping charges are extra & confirmed on WhatsApp based on your delivery address.</span>
+                    <span>Free shipping or location confirmed at checkout.</span>
                   </p>
                 </>
               )}
@@ -296,6 +345,219 @@ export function ProductDetail() {
               ))}
             </div>
           </section>
+        )}
+
+        {/* Online Checkout Modal */}
+        {isCheckoutOpen && (
+          <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+            <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-[#E8E0D5] my-8 animate-in fade-in zoom-in-95">
+              <div className="flex items-center justify-between pb-4 border-b border-[#E8E0D5]">
+                <div className="flex items-center gap-2">
+                  <CreditCard size={20} className="text-primary" />
+                  <h3 className="text-xl font-heading font-bold text-text-dark">
+                    Fast Online Checkout
+                  </h3>
+                </div>
+                <button
+                  onClick={() => setIsCheckoutOpen(false)}
+                  className="p-1 rounded-lg text-text-muted hover:text-text-dark hover:bg-bg-cream"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              {/* Product summary snippet */}
+              <div className="mt-4 p-4 rounded-2xl bg-bg-cream/70 border border-[#E8E0D5]/70 flex items-center justify-between">
+                <div>
+                  <h4 className="text-sm font-heading font-bold text-text-dark">{product.shortName}</h4>
+                  <p className="text-xs text-text-muted font-body">Pack: {selectedVariant.weight}</p>
+                  <p className="text-xs font-bold text-primary mt-1 font-body">₹{selectedVariant.price} each</p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setCheckoutQuantity(Math.max(1, checkoutQuantity - 1))}
+                    className="w-7 h-7 rounded-lg border border-[#E8E0D5] bg-white text-text-dark font-bold text-sm hover:bg-bg-cream"
+                  >
+                    -
+                  </button>
+                  <span className="font-bold font-body text-sm w-5 text-center">{checkoutQuantity}</span>
+                  <button
+                    type="button"
+                    onClick={() => setCheckoutQuantity(checkoutQuantity + 1)}
+                    className="w-7 h-7 rounded-lg border border-[#E8E0D5] bg-white text-text-dark font-bold text-sm hover:bg-bg-cream"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+
+              {checkoutError && (
+                <div className="mt-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
+                  <AlertCircle size={16} className="shrink-0" />
+                  <span>{checkoutError}</span>
+                </div>
+              )}
+
+              <form
+                className="mt-5 space-y-4"
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  setCheckoutLoading(true);
+                  setCheckoutError(null);
+
+                  const itemTotal = (selectedVariant.price || product.price || 0) * checkoutQuantity;
+
+                  const res = await stripeService.processDirectCheckout({
+                    userId: user?.id,
+                    customerName: checkoutName,
+                    customerEmail: checkoutEmail,
+                    customerPhone: checkoutPhone,
+                    shippingAddress: {
+                      line1: checkoutAddress,
+                      city: checkoutCity,
+                      state: 'Gujarat',
+                      postal_code: checkoutPincode,
+                      country: 'India',
+                    },
+                    subtotal: itemTotal,
+                    shippingFee: 0,
+                    totalAmount: itemTotal,
+                    items: [
+                      {
+                        productId: product.id,
+                        variantId: selectedVariant.id,
+                        productName: product.shortName,
+                        variantLabel: selectedVariant.label || selectedVariant.weight,
+                        unitPrice: selectedVariant.price,
+                        quantity: checkoutQuantity,
+                        totalPrice: itemTotal,
+                      },
+                    ],
+                  });
+
+                  if (res.success && res.orderNumber) {
+                    setIsCheckoutOpen(false);
+                    navigate(`/checkout/success?order_number=${res.orderNumber}`);
+                  } else {
+                    setCheckoutError(res.error || 'Failed to complete payment.');
+                    setCheckoutLoading(false);
+                  }
+                }}
+              >
+                <div>
+                  <label className="block text-xs font-bold text-text-dark mb-1 font-body">
+                    Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={checkoutName}
+                    onChange={(e) => setCheckoutName(e.target.value)}
+                    placeholder="John Doe"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E8E0D5] bg-bg-cream text-text-dark text-sm focus:outline-none focus:border-primary font-body"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold text-text-dark mb-1 font-body">
+                      Email Address *
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      value={checkoutEmail}
+                      onChange={(e) => setCheckoutEmail(e.target.value)}
+                      placeholder="you@example.com"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#E8E0D5] bg-bg-cream text-text-dark text-sm focus:outline-none focus:border-primary font-body"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-text-dark mb-1 font-body">
+                      Phone Number *
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      value={checkoutPhone}
+                      onChange={(e) => setCheckoutPhone(e.target.value)}
+                      placeholder="+91 97142 80780"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#E8E0D5] bg-bg-cream text-text-dark text-sm focus:outline-none focus:border-primary font-body"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-text-dark mb-1 font-body">
+                    Delivery Address *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={checkoutAddress}
+                    onChange={(e) => setCheckoutAddress(e.target.value)}
+                    placeholder="House/Flat No, Street, Landmark"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E8E0D5] bg-bg-cream text-text-dark text-sm focus:outline-none focus:border-primary font-body"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold text-text-dark mb-1 font-body">
+                      City *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={checkoutCity}
+                      onChange={(e) => setCheckoutCity(e.target.value)}
+                      placeholder="Surat"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#E8E0D5] bg-bg-cream text-text-dark text-sm focus:outline-none focus:border-primary font-body"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-text-dark mb-1 font-body">
+                      Pincode *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={checkoutPincode}
+                      onChange={(e) => setCheckoutPincode(e.target.value)}
+                      placeholder="395006"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#E8E0D5] bg-bg-cream text-text-dark text-sm focus:outline-none focus:border-primary font-body"
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-3 border-t border-[#E8E0D5] flex items-center justify-between text-base font-bold font-body">
+                  <span>Total Amount</span>
+                  <span className="text-primary text-xl">
+                    ₹{(selectedVariant.price || product.price || 0) * checkoutQuantity}
+                  </span>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={checkoutLoading}
+                  className="w-full py-3.5 px-4 rounded-xl text-white font-bold font-body text-base bg-primary hover:bg-primary/90 transition-colors shadow-md shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-60"
+                >
+                  {checkoutLoading ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>Processing Payment...</span>
+                    </>
+                  ) : (
+                    <span>Pay ₹{(selectedVariant.price || product.price || 0) * checkoutQuantity} Now</span>
+                  )}
+                </button>
+              </form>
+            </div>
+          </div>
         )}
       </div>
     </div>

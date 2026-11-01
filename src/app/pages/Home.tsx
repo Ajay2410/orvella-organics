@@ -1,8 +1,10 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { Leaf, Sun, Truck, Droplet, Zap, Heart, Instagram } from "lucide-react";
 import { motion } from "motion/react";
 import { homeVariants } from "../animations";
 import { PRODUCTS, sortProductsByStockStatus } from "../data/products";
+import { productService, type Product } from "../services/products/productService";
 
 function getStockBadgeClass(product: any) {
   return product.isOutOfStock ? "bg-[#8B3E16]" : "bg-primary";
@@ -72,6 +74,16 @@ function ProductCard({ product }: { product: any }) {
 }
 
 export function Home() {
+  const [productList, setProductList] = useState<Product[]>(PRODUCTS);
+
+  useEffect(() => {
+    productService.getProducts().then((data) => {
+      if (data && data.length > 0) {
+        setProductList(data);
+      }
+    });
+  }, []);
+
   return (
   <motion.div initial="hidden" animate="visible" exit="exit" variants={homeVariants} className="flex flex-col">
       {/* Hero Section */}
@@ -138,7 +150,7 @@ export function Home() {
             Our Products
           </motion.h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6 max-w-5xl mx-auto">
-            {sortProductsByStockStatus(PRODUCTS).map(p => <ProductCard key={p.id} product={p} />)}
+            {sortProductsByStockStatus(productList).map(p => <ProductCard key={p.id} product={p} />)}
           </div>
         </div>
       </section>

@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import { productsVariants } from "../animations";
 import { PRODUCTS, sortProductsByStockStatus } from "../data/products";
+import { productService, type Product } from "../services/products/productService";
 
 const STOCK_FILTERS = [
   { label: "All Stock", value: "all" },
@@ -116,7 +117,17 @@ function ProductCard({ product }: { product: any }) {
 export function Products() {
   const [stockFilter, setStockFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const filteredProducts = sortProductsByStockStatus(PRODUCTS.filter((product) => {
+  const [productList, setProductList] = useState<Product[]>(PRODUCTS);
+
+  useEffect(() => {
+    productService.getProducts().then((data) => {
+      if (data && data.length > 0) {
+        setProductList(data);
+      }
+    });
+  }, []);
+
+  const filteredProducts = sortProductsByStockStatus(productList.filter((product) => {
     if (categoryFilter !== "all" && product.category !== categoryFilter) return false;
     if (stockFilter === "in-stock") return hasInStockVariant(product);
     if (stockFilter === "out-of-stock") return hasOutOfStockVariant(product);

@@ -1,7 +1,8 @@
 import { Link, useLocation } from "react-router";
-import { Menu, X } from "lucide-react";
-import { useState } from "react";
+import { Menu, X, User, LogOut, ShieldCheck, ChevronDown } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
 import logoWide from "../../assets/brand/orvella-logo-wide.png";
+import { useAuth } from "../hooks/useAuth";
 
 const NAV_ITEMS = [
   { label: "Home", path: "/" },
@@ -12,7 +13,20 @@ const NAV_ITEMS = [
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
+  const { user, profile, isAdmin, signOut } = useAuth();
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const isItemActive = (item: (typeof NAV_ITEMS)[0]) => {
     if (item.path === "/") {
@@ -23,6 +37,8 @@ export function Navbar() {
     }
     return location.pathname === item.path;
   };
+
+  const displayName = profile?.full_name || user?.email?.split("@")[0] || "Account";
 
   return (
     <header className="sticky top-0 z-50 bg-white h-[84px] flex items-center border-b border-[#E8E0D5] px-4 sm:px-6 lg:px-20">
@@ -56,8 +72,8 @@ export function Navbar() {
           })}
         </nav>
 
-        {/* Right Icons */}
-        <div className="flex items-center gap-5">
+        {/* Right Icons & Auth */}
+        <div className="flex items-center gap-4 sm:gap-5">
           <a
             href={`https://wa.me/919714280780?text=${encodeURIComponent("Hi Orvella Organics! 🌿 I am visiting your website and have an inquiry about your products and ordering.")}`}
             target="_blank"
@@ -70,6 +86,69 @@ export function Navbar() {
             </svg>
           </a>
 
+          {/* User Auth Dropdown (Desktop) */}
+          <div className="hidden md:block relative" ref={dropdownRef}>
+            {user ? (
+              <div>
+                <button
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#E8E0D5] bg-bg-cream/60 hover:bg-bg-cream transition-colors text-sm text-text-dark font-medium"
+                >
+                  <div className="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold uppercase">
+                    {displayName.charAt(0)}
+                  </div>
+                  <span className="max-w-[120px] truncate">{displayName}</span>
+                  <ChevronDown size={14} className="text-text-muted" />
+                </button>
+
+                {isDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.1)] border border-[#E8E0D5] py-2 z-50">
+                    <div className="px-4 py-2.5 border-b border-[#E8E0D5]/70">
+                      <p className="text-sm font-semibold text-text-dark truncate">{displayName}</p>
+                      <p className="text-xs text-text-muted truncate">{user.email}</p>
+                      {isAdmin && (
+                        <span className="inline-block mt-1 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800 rounded-full">
+                          Admin
+                        </span>
+                      )}
+                    </div>
+
+                    {isAdmin && (
+                      <Link
+                        to="/admin"
+                        onClick={() => setIsDropdownOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-primary font-medium hover:bg-bg-cream transition-colors"
+                      >
+                        <ShieldCheck size={16} />
+                        <span>Admin Dashboard</span>
+                      </Link>
+                    )}
+
+                    <button
+                      onClick={() => {
+                        setIsDropdownOpen(false);
+                        signOut();
+                      }}
+                      className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                    >
+                      <LogOut size={16} />
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-text-dark hover:text-primary border border-[#E8E0D5] rounded-full hover:border-primary/50 transition-colors"
+              >
+                <User size={16} />
+                <span>Sign In</span>
+              </Link>
+            )}
+          </div>
+
+          {/* Mobile Menu Button */}
           <button className="md:hidden text-text-dark" onClick={() => setIsOpen(!isOpen)} aria-label="Toggle Navigation Menu">
             {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -78,7 +157,7 @@ export function Navbar() {
       
       {/* Mobile Nav */}
       {isOpen && (
-        <div className="absolute top-[84px] left-0 right-0 bg-white border-b border-[#E8E0D5] p-4 flex flex-col gap-2 md:hidden shadow-lg">
+        <div className="absolute top-[84px] left-0 right-0 bg-white border-b border-[#E8E0D5] p-4 flex flex-col gap-2 md:hidden shadow-lg z-50">
           {NAV_ITEMS.map((item) => {
             const active = isItemActive(item);
             return (
@@ -96,6 +175,50 @@ export function Navbar() {
               </Link>
             );
           })}
+
+          <div className="pt-3 mt-1 border-t border-[#E8E0D5]/70 flex flex-col gap-2">
+            {user ? (
+              <>
+                <div className="px-3 py-1.5 text-xs text-text-muted">
+                  Signed in as <strong className="text-text-dark">{user.email}</strong>
+                  {isAdmin && (
+                    <span className="ml-2 px-2 py-0.5 text-[9px] font-bold uppercase bg-amber-100 text-amber-800 rounded-full">
+                      Admin
+                    </span>
+                  )}
+                </div>
+                {isAdmin && (
+                  <Link
+                    to="/admin"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center gap-2 px-3 py-2 text-[15px] font-medium text-primary rounded-[8px] hover:bg-bg-cream"
+                  >
+                    <ShieldCheck size={18} />
+                    <span>Admin Dashboard</span>
+                  </Link>
+                )}
+                <button
+                  onClick={() => {
+                    setIsOpen(false);
+                    signOut();
+                  }}
+                  className="flex items-center gap-2 px-3 py-2 text-[15px] font-medium text-red-600 rounded-[8px] hover:bg-red-50 text-left"
+                >
+                  <LogOut size={18} />
+                  <span>Sign Out</span>
+                </button>
+              </>
+            ) : (
+              <Link
+                to="/login"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm text-white bg-primary hover:bg-primary/90"
+              >
+                <User size={16} />
+                <span>Sign In / Register</span>
+              </Link>
+            )}
+          </div>
         </div>
       )}
     </header>
