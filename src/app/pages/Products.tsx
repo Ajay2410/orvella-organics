@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { ShoppingBag } from "lucide-react";
 import { productsVariants } from "../animations";
 import { PRODUCTS, sortProductsByStockStatus } from "../data/products";
-import { fetchProducts, type CatalogProduct } from "../../services/catalog";
+import { fetchProducts, getCachedProducts, type CatalogProduct } from "../../services/catalog";
 import { useCart } from "../../context/CartContext";
 
 const STOCK_FILTERS = [
@@ -63,11 +63,10 @@ function ProductCard({ product }: { product: any }) {
 
   return (
     <motion.div 
-      layout
-      initial={{ opacity: 0, scale: 0.9 }}
+      initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.9 }}
-      transition={{ duration: 0.28 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.2 }}
       className="bg-white rounded-[16px] p-5 flex flex-col gap-4 shadow-[0_2px_16px_rgba(0,0,0,0.05)] border border-[#E8E0D5]/50"
     >
       <Link to={`/products/${product.id}`} className="block relative aspect-square rounded-[12px] overflow-hidden bg-bg-cream">
@@ -129,7 +128,7 @@ function ProductCard({ product }: { product: any }) {
 export function Products() {
   const [stockFilter, setStockFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const [allProducts, setAllProducts] = useState<CatalogProduct[]>(PRODUCTS as any);
+  const [allProducts, setAllProducts] = useState<CatalogProduct[]>(() => getCachedProducts() || (PRODUCTS as any));
 
   useEffect(() => {
     fetchProducts().then((data) => {
@@ -210,13 +209,11 @@ export function Products() {
                 </div>
               </div>
 
-              <motion.div layout className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-8">
-                <AnimatePresence mode="popLayout">
-                  {section.products.map(p => (
-                    <ProductCard key={p.id} product={p} />
-                  ))}
-                </AnimatePresence>
-              </motion.div>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-8">
+                {section.products.map(p => (
+                  <ProductCard key={p.id} product={p} />
+                ))}
+              </div>
             </section>
           ))}
         </div>
