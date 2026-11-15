@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router";
-import { Menu, X, ShoppingBag, User as UserIcon } from "lucide-react";
+import { Menu, X, ShoppingBag, User as UserIcon, Package } from "lucide-react";
 import { useState } from "react";
 import logoWide from "../../assets/brand/orvella-logo-wide.png";
 import { useAuth } from "../../context/AuthContext";
@@ -69,18 +69,28 @@ export function Navbar() {
           
           {/* User Account / Sign In */}
           {user ? (
-            <Link
-              to="/account"
-              className="flex items-center gap-2 py-1.5 px-3 rounded-full hover:bg-bg-cream transition-colors text-text-dark font-body text-sm"
-              title="My Account"
-            >
-              <div className="w-8 h-8 rounded-full bg-primary/10 text-primary font-bold text-xs flex items-center justify-center border border-primary/20">
-                {profile?.full_name ? profile.full_name[0].toUpperCase() : user.email?.[0].toUpperCase()}
-              </div>
-              <span className="hidden sm:inline font-medium text-xs max-w-[100px] truncate">
-                {profile?.full_name || 'Account'}
-              </span>
-            </Link>
+            <div className="flex items-center gap-1.5">
+              <Link
+                to="/orders"
+                className="hidden sm:inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full hover:bg-bg-cream transition-colors text-text-dark font-body text-xs font-semibold"
+                title="My Orders & Tracking"
+              >
+                <Package size={15} className="text-primary" />
+                <span>Orders</span>
+              </Link>
+              <Link
+                to="/account"
+                className="flex items-center gap-2 py-1.5 px-3 rounded-full hover:bg-bg-cream transition-colors text-text-dark font-body text-sm"
+                title="My Account"
+              >
+                <div className="w-8 h-8 rounded-full bg-primary/10 text-primary font-bold text-xs flex items-center justify-center border border-primary/20">
+                  {profile?.full_name ? profile.full_name[0].toUpperCase() : user.email?.[0].toUpperCase()}
+                </div>
+                <span className="hidden md:inline font-medium text-xs max-w-[100px] truncate">
+                  {profile?.full_name || 'Account'}
+                </span>
+              </Link>
+            </div>
           ) : (
             <button
               onClick={() => openAuthModal()}
@@ -144,16 +154,26 @@ export function Navbar() {
               </Link>
             );
           })}
-          <div className="border-t border-[#E8E0D5] pt-2 mt-1">
+          <div className="border-t border-[#E8E0D5] pt-2 mt-1 space-y-1">
             {user ? (
-              <Link
-                to="/account"
-                className="flex items-center gap-2 px-3 py-2 rounded-[8px] text-[15px] font-semibold text-primary hover:bg-bg-cream"
-                onClick={() => setIsOpen(false)}
-              >
-                <UserIcon size={16} />
-                My Account
-              </Link>
+              <>
+                <Link
+                  to="/orders"
+                  className="flex items-center gap-2 px-3 py-2 rounded-[8px] text-[15px] font-semibold text-text-dark hover:bg-bg-cream"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <Package size={16} className="text-primary" />
+                  My Orders & Tracking
+                </Link>
+                <Link
+                  to="/account"
+                  className="flex items-center gap-2 px-3 py-2 rounded-[8px] text-[15px] font-semibold text-primary hover:bg-bg-cream"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <UserIcon size={16} />
+                  My Account
+                </Link>
+              </>
             ) : (
               <button
                 onClick={() => {

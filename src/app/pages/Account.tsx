@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { User, MapPin, Phone, Mail, Plus, Trash2, CheckCircle2, Shield, Loader2, ArrowLeft } from 'lucide-react';
+import { User, MapPin, Phone, Mail, Plus, Trash2, CheckCircle2, Shield, Loader2, ArrowLeft, Package } from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../lib/supabase';
@@ -206,6 +206,15 @@ export function Account() {
                 Administrator
               </span>
             )}
+          </div>
+          <div className="flex sm:flex-col gap-2">
+            <Link
+              to="/orders"
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-primary text-white font-body font-bold text-xs rounded-xl hover:bg-primary-dark transition-all shadow-xs"
+            >
+              <Package size={15} />
+              <span>My Orders</span>
+            </Link>
           </div>
         </div>
 
