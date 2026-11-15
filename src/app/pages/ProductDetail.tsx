@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Link, Navigate, useParams } from "react-router";
 import { Leaf, PackageCheck, ShieldCheck, ChevronDown, ChevronUp, Truck } from "lucide-react";
 import { CHIKOO_PRODUCT, PRODUCTS, getDefaultProductVariant } from "../data/products";
+import { fetchProductBySlug, fetchProducts, type CatalogProduct } from "../../services/catalog";
 
 function getStockBadgeClass(product: any) {
   return product.isOutOfStock ? "bg-[#8B3E16]" : "bg-primary";
@@ -61,9 +62,30 @@ function SuggestedProductCard({ product }: { product: any }) {
 
 export function ProductDetail() {
   const { id } = useParams();
-  const product = PRODUCTS.find((item) => item.id === id) || (id === "chikoo" ? CHIKOO_PRODUCT : undefined);
-  const [selectedImage, setSelectedImage] = useState(product?.heroImage || CHIKOO_PRODUCT.heroImage);
+  const initialProduct = PRODUCTS.find((item) => item.id === id) || (id === "chikoo" ? CHIKOO_PRODUCT : undefined);
+  const [product, setProduct] = useState<CatalogProduct | any>(initialProduct || CHIKOO_PRODUCT);
+  const [selectedImage, setSelectedImage] = useState(initialProduct?.heroImage || CHIKOO_PRODUCT.heroImage);
   const [selectedVariantId, setSelectedVariantId] = useState(getDefaultProductVariant().id);
+  const [allProducts, setAllProducts] = useState<CatalogProduct[]>(PRODUCTS as any);
+
+  useEffect(() => {
+    if (id) {
+      fetchProductBySlug(id).then((fetched) => {
+        if (fetched) {
+          setProduct(fetched);
+          setSelectedImage(fetched.heroImage);
+          const defaultVar = fetched.variants?.find((v: any) => !v.isOutOfStock) || fetched.variants?.[0] || getDefaultProductVariant();
+          setSelectedVariantId(defaultVar.id);
+        }
+      });
+    }
+
+    fetchProducts().then((list) => {
+      if (list && list.length > 0) {
+        setAllProducts(list);
+      }
+    });
+  }, [id]);
 
   useEffect(() => {
     if (product) {
@@ -77,8 +99,8 @@ export function ProductDetail() {
   }
 
   const selectedVariant = product.variants?.find((variant: any) => variant.id === selectedVariantId) || product;
-  const showProductMrp = selectedVariant.id === "200g";
-  const suggestedProducts = PRODUCTS.filter((item) => item.id !== product.id);
+  const showProductMrp = selectedVariant.id === "200g" || selectedVariant.label === "200 g";
+  const suggestedProducts = allProducts.filter((item) => item.id !== product.id);
 
   return (
     <div className="py-8 lg:py-14 px-4 sm:px-6 lg:px-20 bg-bg-cream min-h-screen">
