@@ -1,7 +1,9 @@
 import { Link, useLocation } from "react-router";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ShoppingBag, User as UserIcon } from "lucide-react";
 import { useState } from "react";
 import logoWide from "../../assets/brand/orvella-logo-wide.png";
+import { useAuth } from "../../context/AuthContext";
+import { useCart } from "../../context/CartContext";
 
 const NAV_ITEMS = [
   { label: "Home", path: "/" },
@@ -13,6 +15,8 @@ const NAV_ITEMS = [
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { user, profile, openAuthModal } = useAuth();
+  const { totalItems, setIsCartOpen } = useCart();
 
   const isItemActive = (item: (typeof NAV_ITEMS)[0]) => {
     if (item.path === "/") {
@@ -25,12 +29,16 @@ export function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white h-[84px] flex items-center border-b border-[#E8E0D5] px-4 sm:px-6 lg:px-20">
+    <header className="sticky top-0 z-40 bg-white h-[84px] flex items-center border-b border-[#E8E0D5] px-4 sm:px-6 lg:px-20">
       <div className="w-full flex items-center justify-between">
         
         {/* Logo */}
         <Link to="/" className="flex items-center">
-          <img src={logoWide} alt="Orvella Organics" className="h-14 sm:h-16 w-auto max-w-[190px] sm:max-w-[240px] object-contain" />
+          <img
+            src={logoWide}
+            alt="Orvella Organics"
+            className="h-14 sm:h-16 w-auto max-w-[190px] sm:max-w-[240px] object-contain"
+          />
         </Link>
 
         {/* Desktop Nav */}
@@ -57,12 +65,52 @@ export function Navbar() {
         </nav>
 
         {/* Right Icons */}
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-2.5 sm:gap-4">
+          
+          {/* User Account / Sign In */}
+          {user ? (
+            <Link
+              to="/account"
+              className="flex items-center gap-2 py-1.5 px-3 rounded-full hover:bg-bg-cream transition-colors text-text-dark font-body text-sm"
+              title="My Account"
+            >
+              <div className="w-8 h-8 rounded-full bg-primary/10 text-primary font-bold text-xs flex items-center justify-center border border-primary/20">
+                {profile?.full_name ? profile.full_name[0].toUpperCase() : user.email?.[0].toUpperCase()}
+              </div>
+              <span className="hidden sm:inline font-medium text-xs max-w-[100px] truncate">
+                {profile?.full_name || 'Account'}
+              </span>
+            </Link>
+          ) : (
+            <button
+              onClick={() => openAuthModal()}
+              className="inline-flex items-center gap-1.5 py-1.5 px-3.5 border border-[#D8CEC2] rounded-full text-text-dark hover:border-primary hover:text-primary transition-all font-body text-xs font-semibold shadow-xs"
+            >
+              <UserIcon size={14} />
+              <span>Sign In</span>
+            </button>
+          )}
+
+          {/* Cart Icon */}
+          <button
+            onClick={() => setIsCartOpen(true)}
+            className="relative p-2 text-text-dark hover:text-primary transition-colors rounded-full hover:bg-bg-cream"
+            aria-label="Open Cart"
+          >
+            <ShoppingBag size={22} />
+            {totalItems > 0 && (
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-white text-[11px] font-bold rounded-full flex items-center justify-center shadow-xs">
+                {totalItems}
+              </span>
+            )}
+          </button>
+
+          {/* WhatsApp Support Link */}
           <a
             href={`https://wa.me/919714280780?text=${encodeURIComponent("Hi Orvella Organics! 🌿 I am visiting your website and have an inquiry about your products and ordering.")}`}
             target="_blank"
             rel="noreferrer"
-            className="text-[#25D366] hover:opacity-80 transition-opacity hidden md:flex items-center justify-center"
+            className="text-[#25D366] hover:opacity-80 transition-opacity hidden md:flex items-center justify-center p-2 rounded-full hover:bg-bg-cream"
             aria-label="Contact us on WhatsApp"
           >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
@@ -70,7 +118,7 @@ export function Navbar() {
             </svg>
           </a>
 
-          <button className="md:hidden text-text-dark" onClick={() => setIsOpen(!isOpen)} aria-label="Toggle Navigation Menu">
+          <button className="md:hidden text-text-dark p-1" onClick={() => setIsOpen(!isOpen)} aria-label="Toggle Navigation Menu">
             {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
@@ -78,7 +126,7 @@ export function Navbar() {
       
       {/* Mobile Nav */}
       {isOpen && (
-        <div className="absolute top-[84px] left-0 right-0 bg-white border-b border-[#E8E0D5] p-4 flex flex-col gap-2 md:hidden shadow-lg">
+        <div className="absolute top-[84px] left-0 right-0 bg-white border-b border-[#E8E0D5] p-4 flex flex-col gap-2 md:hidden shadow-lg z-50">
           {NAV_ITEMS.map((item) => {
             const active = isItemActive(item);
             return (
@@ -96,6 +144,29 @@ export function Navbar() {
               </Link>
             );
           })}
+          <div className="border-t border-[#E8E0D5] pt-2 mt-1">
+            {user ? (
+              <Link
+                to="/account"
+                className="flex items-center gap-2 px-3 py-2 rounded-[8px] text-[15px] font-semibold text-primary hover:bg-bg-cream"
+                onClick={() => setIsOpen(false)}
+              >
+                <UserIcon size={16} />
+                My Account
+              </Link>
+            ) : (
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  openAuthModal();
+                }}
+                className="w-full flex items-center gap-2 px-3 py-2 rounded-[8px] text-[15px] font-semibold text-primary hover:bg-bg-cream text-left"
+              >
+                <UserIcon size={16} />
+                Sign In
+              </button>
+            )}
+          </div>
         </div>
       )}
     </header>

@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
+import { ShoppingBag } from "lucide-react";
 import { productsVariants } from "../animations";
 import { PRODUCTS, sortProductsByStockStatus } from "../data/products";
 import { fetchProducts, type CatalogProduct } from "../../services/catalog";
+import { useCart } from "../../context/CartContext";
 
 const STOCK_FILTERS = [
   { label: "All Stock", value: "all" },
@@ -51,6 +53,14 @@ function PriceBlock({ product }: { product: any }) {
 }
 
 function ProductCard({ product }: { product: any }) {
+  const { addToCart } = useCart();
+
+  const handleAdd = () => {
+    const defaultVar = product.variants?.find((v: any) => !v.isOutOfStock) || product.variants?.[0];
+    const varId = defaultVar?.dbId || defaultVar?.id || product.id;
+    addToCart(varId, 1, product.shortName);
+  };
+
   return (
     <motion.div 
       layout
@@ -93,21 +103,23 @@ function ProductCard({ product }: { product: any }) {
         <PriceBlock product={product} />
         
         <div className="flex flex-col gap-2 mt-2">
-          <Link to={`/products/${product.id}`} className="w-full text-center border border-primary text-primary px-4 py-2.5 rounded-[8px] text-sm font-medium hover:bg-primary/5 transition-colors">
+          {product.isOutOfStock ? (
+            <button disabled className="w-full text-center bg-[#D8CEC2] text-text-muted px-4 py-2.5 rounded-[8px] text-sm font-medium cursor-not-allowed">
+              Out of Stock
+            </button>
+          ) : (
+            <button
+              onClick={handleAdd}
+              className="w-full flex items-center justify-center gap-2 bg-primary text-white px-4 py-2.5 rounded-[8px] text-sm font-semibold hover:bg-primary-dark transition-colors shadow-xs cursor-pointer"
+            >
+              <ShoppingBag size={16} />
+              <span>Add to Cart</span>
+            </button>
+          )}
+
+          <Link to={`/products/${product.id}`} className="w-full text-center border border-primary/40 text-primary px-4 py-2 rounded-[8px] text-xs font-semibold hover:bg-primary/5 transition-colors">
             View Details
           </Link>
-          {product.isOutOfStock ? (
-            <button disabled className="w-full mt-2 text-center bg-[#D8CEC2] text-text-muted px-4 py-2.5 rounded-[8px] text-sm font-medium cursor-not-allowed">Out of Stock</button>
-          ) : (
-            <a
-              href={`https://wa.me/919714280780?text=${encodeURIComponent(`Hi Orvella Organics! 🌿\n\nI would like to place an order:\n• Product: ${product.shortName}\n• Pack: ${product.weight || "Standard pack"}\n• Price: ₹${product.price} (+ shipping)\n\nPlease share the total amount with shipping charges for my delivery pincode.`)}`}
-              target="_blank"
-              rel="noreferrer"
-              className="w-full mt-2 text-center bg-[#25D366] text-white px-4 py-2.5 rounded-[8px] text-sm font-medium hover:opacity-90 transition-opacity"
-            >
-              Order on WhatsApp
-            </a>
-          )}
         </div>
       </div>
     </motion.div>
