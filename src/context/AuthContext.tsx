@@ -102,13 +102,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signInWithGoogle = async () => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: window.location.origin,
         },
       });
-      return { error };
+      if (error) {
+        return { error };
+      }
+      return { error: null };
     } catch (err: any) {
       return { error: err };
     }
@@ -116,11 +119,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signInWithPassword = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
         password,
       });
-      if (!error) {
+      if (!error && data.session) {
+        setSession(data.session);
+        setUser(data.session.user);
+        await fetchProfile(data.session.user.id);
         setIsAuthModalOpen(false);
       }
       return { error };
@@ -131,19 +137,55 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signUpWithPassword = async (email: string, password: string, fullName: string) => {
     try {
-      const { error } = await supabase.auth.signUp({
-        email,
+      const trimmedEmail = email.trim();
+      const { data, error } = await supabase.auth.signUp({
+        email: trimmedEmail,
         password,
         options: {
           data: {
-            full_name: fullName,
+            full_name: fullName.trim(),
           },
         },
       });
-      if (!error) {
-        setIsAuthModalOpen(false);
+
+      if (error) {
+        return { error };
       }
-      return { error };
+
+      // If Supabase has "Confirm email" disabled, session is returned immediately!
+      if (data.session) {
+        setSession(data.session);
+        setUser(data.session.user);
+        await fetchProfile(data.session.user.id);
+        setIsAuthModalOpen(false);
+        return { error: null };
+      }
+
+      // If no session returned, try direct login immediately
+      const loginAttempt = await supabase.auth.signInWithPassword({
+        email: trimmedEmail,
+        password,
+      });
+
+      if (loginAttempt.data?.session) {
+        setSession(loginAttempt.data.session);
+        setUser(loginAttempt.data.session.user);
+        await fetchProfile(loginAttempt.data.session.user.id);
+        setIsAuthModalOpen(false);
+        return { error: null };
+      }
+
+      if (loginAttempt.error) {
+        return {
+          error: new Error(
+            loginAttempt.error.message.includes('Email not confirmed')
+              ? "Please disable 'Confirm email' in your Supabase Dashboard (Authentication -> Providers -> Email) for instant 1-click signup!"
+              : loginAttempt.error.message
+          ),
+        };
+      }
+
+      return { error: null };
     } catch (err: any) {
       return { error: err };
     }

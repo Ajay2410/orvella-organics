@@ -38,8 +38,6 @@ export function AuthModal() {
         const { error } = await signUpWithPassword(email, password, fullName);
         if (error) {
           setErrorMessage(error.message);
-        } else {
-          setSuccessMessage('Account created! Please check your email to confirm if required.');
         }
       } else {
         const { error } = await signInWithPassword(email, password);
@@ -57,7 +55,10 @@ export function AuthModal() {
     setLoading(true);
     const { error } = await signInWithGoogle();
     if (error) {
-      setErrorMessage(error.message);
+      const msg = error.message.toLowerCase().includes('not enabled') || error.message.toLowerCase().includes('unsupported')
+        ? 'Google provider is not enabled in your Supabase project. Please sign up or log in with Email & Password below.'
+        : error.message;
+      setErrorMessage(msg);
       setLoading(false);
     }
   };
