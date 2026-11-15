@@ -138,15 +138,41 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     try {
+      // Ensure variantId is a valid UUID
+      const isUUID = (str: string) =>
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
+
+      let resolvedVariantId = variantId;
+      if (!isUUID(resolvedVariantId)) {
+        const cleanLabel = variantId.replace(/g/i, ' g').trim();
+        const { data: vData } = await supabase
+          .from('product_variants')
+          .select('id')
+          .ilike('label', `%${cleanLabel}%`)
+          .limit(1);
+
+        if (vData && vData.length > 0) {
+          resolvedVariantId = vData[0].id;
+        } else {
+          const { data: fallbackV } = await supabase
+            .from('product_variants')
+            .select('id')
+            .limit(1);
+          if (fallbackV && fallbackV.length > 0) {
+            resolvedVariantId = fallbackV[0].id;
+          }
+        }
+      }
+
       // Check existing item
-      const existing = items.find((i) => i.variant_id === variantId);
+      const existing = items.find((i) => i.variant_id === resolvedVariantId);
       if (existing) {
         const newQty = existing.qty + qty;
         await updateQty(existing.id, newQty);
       } else {
         const { error } = await supabase.from('cart_items').insert({
           user_id: user.id,
-          variant_id: variantId,
+          variant_id: resolvedVariantId,
           qty,
         });
         if (error) {

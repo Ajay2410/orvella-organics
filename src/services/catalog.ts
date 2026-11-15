@@ -128,7 +128,17 @@ function transformDbProduct(item: any): CatalogProduct {
   };
 }
 
+let cachedProducts: CatalogProduct[] | null = null;
+
+export function getCachedProducts(): CatalogProduct[] | null {
+  return cachedProducts;
+}
+
 export async function fetchProducts(): Promise<CatalogProduct[]> {
+  if (cachedProducts && cachedProducts.length > 0) {
+    return cachedProducts;
+  }
+
   try {
     const { data, error } = await supabase
       .from('products')
@@ -141,7 +151,8 @@ export async function fetchProducts(): Promise<CatalogProduct[]> {
       return PRODUCTS as any;
     }
 
-    return data.map(transformDbProduct);
+    cachedProducts = data.map(transformDbProduct);
+    return cachedProducts;
   } catch (err) {
     console.error('Error fetching products from Supabase:', err);
     return PRODUCTS as any;
@@ -149,6 +160,11 @@ export async function fetchProducts(): Promise<CatalogProduct[]> {
 }
 
 export async function fetchProductBySlug(slug: string): Promise<CatalogProduct | null> {
+  if (cachedProducts) {
+    const found = cachedProducts.find((p) => p.id === slug);
+    if (found) return found;
+  }
+
   try {
     const { data, error } = await supabase
       .from('products')
