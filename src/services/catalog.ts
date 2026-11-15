@@ -3,6 +3,7 @@ import { PRODUCTS, CHIKOO_PRODUCT } from '../app/data/products';
 
 export interface CatalogVariant {
   id: string;
+  dbId?: string;
   label: string;
   sku: string | null;
   price: number;
@@ -59,6 +60,7 @@ function transformDbProduct(item: any): CatalogProduct {
     const isOut = v.stock_qty <= 0;
     return {
       id: v.label,
+      dbId: v.id,
       label: v.label,
       sku: v.sku,
       price: priceRupees,

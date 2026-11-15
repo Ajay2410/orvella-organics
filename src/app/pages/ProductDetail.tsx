@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { Link, Navigate, useParams } from "react-router";
-import { Leaf, PackageCheck, ShieldCheck, ChevronDown, ChevronUp, Truck } from "lucide-react";
+import { Leaf, PackageCheck, ShieldCheck, ChevronDown, ChevronUp, Truck, ShoppingBag } from "lucide-react";
 import { CHIKOO_PRODUCT, PRODUCTS, getDefaultProductVariant } from "../data/products";
 import { fetchProductBySlug, fetchProducts, type CatalogProduct } from "../../services/catalog";
+import { useCart } from "../../context/CartContext";
 
 function getStockBadgeClass(product: any) {
   return product.isOutOfStock ? "bg-[#8B3E16]" : "bg-primary";
@@ -62,6 +63,7 @@ function SuggestedProductCard({ product }: { product: any }) {
 
 export function ProductDetail() {
   const { id } = useParams();
+  const { addToCart } = useCart();
   const initialProduct = PRODUCTS.find((item) => item.id === id) || (id === "chikoo" ? CHIKOO_PRODUCT : undefined);
   const [product, setProduct] = useState<CatalogProduct | any>(initialProduct || CHIKOO_PRODUCT);
   const [selectedImage, setSelectedImage] = useState(initialProduct?.heroImage || CHIKOO_PRODUCT.heroImage);
@@ -179,17 +181,31 @@ export function ProductDetail() {
                     <span className="font-body text-sm text-text-muted font-medium">(+ Shipping extra)</span>
                   </div>
                   {selectedVariant.unitPrice && <p className="font-body text-sm text-text-muted">{selectedVariant.unitPrice}</p>}
+                  {/* Add to Cart Button */}
+                  <button
+                    onClick={() => {
+                      const varId = selectedVariant.dbId || selectedVariant.id;
+                      addToCart(varId, 1, product.shortName);
+                    }}
+                    className="w-full flex items-center justify-center gap-2.5 bg-primary text-white py-4 rounded-[12px] font-body font-bold text-lg hover:bg-primary-dark transition-all shadow-lg shadow-primary/20 cursor-pointer"
+                  >
+                    <ShoppingBag size={20} />
+                    <span>Add to Cart</span>
+                  </button>
+
+                  {/* WhatsApp Support Alternative */}
                   <a
-                    href={`https://wa.me/919714280780?text=${encodeURIComponent(`Hi Orvella Organics! 🌿\n\nI would like to place an order:\n• Product: ${product.shortName}\n• Variant: ${selectedVariant.weight}${selectedVariant.packLabel ? ` (${selectedVariant.packLabel})` : ""}\n• Price: ₹${selectedVariant.price} (+ shipping)\n\nPlease share the total amount with shipping charges for my delivery pincode.`)}`}
+                    href={`https://wa.me/919714280780?text=${encodeURIComponent(`Hi Orvella Organics! 🌿\n\nI would like to place an order:\n• Product: ${product.shortName}\n• Variant: ${selectedVariant.weight || selectedVariant.label}${selectedVariant.packLabel ? ` (${selectedVariant.packLabel})` : ""}\n• Price: ₹${selectedVariant.price} (+ shipping)\n\nPlease share the total amount with shipping charges for my delivery pincode.`)}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="w-full flex items-center justify-center gap-3 bg-[#25D366] text-white py-4 rounded-[10px] font-body font-bold text-lg hover:bg-[#20bd5a] transition-colors shadow-lg shadow-[#25D366]/20"
+                    className="w-full flex items-center justify-center gap-2 border border-[#25D366] text-[#25D366] hover:bg-[#25D366]/5 py-3 rounded-[12px] font-body font-semibold text-sm transition-colors"
                   >
-                    Order on WhatsApp
+                    <span>Need help? Order via WhatsApp</span>
                   </a>
+
                   <p className="font-body text-xs text-text-muted text-center flex items-center justify-center gap-1.5 mt-0.5">
                     <Truck size={14} className="text-primary shrink-0" />
-                    <span>Shipping charges are extra & confirmed on WhatsApp based on your delivery address.</span>
+                    <span>Free delivery on orders over ₹499 • Fast courier dispatch</span>
                   </p>
                 </>
               )}
